@@ -1769,7 +1769,13 @@
             });
             
             document.getElementById('chatInputArea').style.display = 'flex';
-            document.getElementById('chatMessages').innerHTML = '';
+            
+            // পুরনো মেসেজগুলো দেখানোর জন্য
+            const messagesContainer = document.getElementById('chatMessages');
+            if (messagesContainer) {
+                // আগের কন্টেন্ট মুছে ফেলুন
+                messagesContainer.innerHTML = '';
+            }
         }
 
         function displayMessages(messages) {
@@ -1872,8 +1878,7 @@
                 
                 input.value = '';
                 
-                const container = document.getElementById('chatMessages');
-                container.scrollTop = container.scrollHeight;
+                // মেসেজ পাঠানোর পর কন্টেইনার আপডেট হবে (Firebase listener নিজেই করবে)
                 
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -2026,6 +2031,9 @@
             chatsRef.on('value', (snapshot) => {
                 let unreadCount = 0;
                 let processed = 0;
+                const totalChats = snapshot.numChildren();
+                
+                if (totalChats === 0) return;
                 
                 snapshot.forEach((chatSnapshot) => {
                     const chatId = chatSnapshot.key;
@@ -2041,7 +2049,7 @@
                             });
                             
                             processed++;
-                            if (processed === snapshot.numChildren()) {
+                            if (processed === totalChats) {
                                 const badge = document.getElementById('sellerUnreadBadge');
                                 if (badge) {
                                     if (unreadCount > 0) {
@@ -2055,6 +2063,17 @@
                         });
                     } else {
                         processed++;
+                        if (processed === totalChats) {
+                            const badge = document.getElementById('sellerUnreadBadge');
+                            if (badge) {
+                                if (unreadCount > 0) {
+                                    badge.style.display = 'flex';
+                                    badge.textContent = unreadCount;
+                                } else {
+                                    badge.style.display = 'none';
+                                }
+                            }
+                        }
                     }
                 });
             });

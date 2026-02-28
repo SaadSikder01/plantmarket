@@ -236,7 +236,7 @@
             color: var(--accent);
         }
 
-        /* সার্চ বার - সরাসরি ন্যাভবারের নিচে */
+        /* সার্চ সেকশন */
         .search-section {
             background: var(--white);
             padding: 20px 0;
@@ -286,7 +286,7 @@
             transform: scale(1.02);
         }
 
-        /* ফিল্টার বাটন - সরাসরি সার্চের নিচে */
+        /* ফিল্টার সেকশন */
         .filter-section {
             background: var(--white);
             padding: 15px 0;
@@ -324,7 +324,7 @@
             color: var(--white);
         }
 
-        /* প্রোডাক্ট গ্রিড - সরাসরি ফিল্টারের নিচে */
+        /* প্রোডাক্ট গ্রিড */
         .products {
             padding: 30px 0;
             background: var(--gray-light);
@@ -1193,7 +1193,7 @@
 
     <!-- হোম পেজ -->
     <div id="homePage">
-        <!-- সার্চ সেকশন - সরাসরি ন্যাভবারের নিচে -->
+        <!-- সার্চ সেকশন -->
         <div class="search-section">
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="আপনার পছন্দের গাছ খুঁজুন...">
@@ -1631,7 +1631,7 @@
                     description: description,
                     price: price,
                     category: category,
-                    whatsapp: whatsapp,
+                    whatsapp: whatsapp || '',
                     imageUrl: imageUrl,
                     sellerId: currentUser.uid,
                     sellerName: currentUserData.name,
@@ -1749,7 +1749,7 @@
             database.ref('users/' + currentChatWith).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
                     const user = snapshot.val();
-                    document.getElementById('chatWithName').textContent = user.name;
+                    document.getElementById('chatWithName').textContent = user.name || 'ইউজার';
                     
                     const statusElement = document.getElementById('chatWithStatus');
                     const onlineDot = document.getElementById('onlineStatus');
@@ -1809,8 +1809,18 @@
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
             
-            if (!text || !currentUser || !currentChatWith || !currentChatId) {
+            if (!text) {
                 showToast('warning', 'মেসেজ লিখুন');
+                return;
+            }
+            
+            if (!currentUser) {
+                showToast('warning', 'লগইন করুন');
+                return;
+            }
+            
+            if (!currentChatWith || !currentChatId) {
+                showToast('error', 'কোন চ্যাট নির্বাচন করা হয়নি');
                 return;
             }
             
@@ -1826,16 +1836,39 @@
             };
             
             try {
+                // ১. প্রথমে মেসেজ সেভ করুন
                 await database.ref(`chats/${currentChatId}/messages`).push(message);
                 
+                // ২. লাস্ট মেসেজ আপডেট করুন
                 await database.ref(`chats/${currentChatId}/lastMessage`).set({
                     text: text,
                     timestamp: message.timestamp,
                     senderId: currentUser.uid
                 });
                 
-                await updateUserChatList(currentUser.uid, currentChatWith, currentChatId, text, message.timestamp, false);
-                await updateUserChatList(currentChatWith, currentUser.uid, currentChatId, text, message.timestamp, true);
+                // ৩. ইউজারের চ্যাট লিস্ট আপডেট করুন (প্রেরকের জন্য)
+                const receiverSnapshot = await database.ref('users/' + currentChatWith).once('value');
+                const receiverData = receiverSnapshot.val() || { name: 'ইউজার' };
+                
+                await database.ref(`users/${currentUser.uid}/chats/${currentChatId}`).set({
+                    withUserId: currentChatWith,
+                    withUserName: receiverData.name || 'ইউজার',
+                    lastMessage: text,
+                    lastMessageTime: message.timestamp,
+                    unread: false
+                });
+                
+                // ৪. প্রাপকের চ্যাট লিস্ট আপডেট করুন
+                const senderSnapshot = await database.ref('users/' + currentUser.uid).once('value');
+                const senderData = senderSnapshot.val() || { name: 'ইউজার' };
+                
+                await database.ref(`users/${currentChatWith}/chats/${currentChatId}`).set({
+                    withUserId: currentUser.uid,
+                    withUserName: senderData.name || 'ইউজার',
+                    lastMessage: text,
+                    lastMessageTime: message.timestamp,
+                    unread: true
+                });
                 
                 input.value = '';
                 
@@ -1848,19 +1881,6 @@
             } finally {
                 sendBtn.disabled = false;
             }
-        }
-
-        async function updateUserChatList(userId, otherUserId, chatId, lastMessage, timestamp, unread) {
-            const otherUserSnapshot = await database.ref('users/' + otherUserId).once('value');
-            const otherUser = otherUserSnapshot.val() || { name: 'ইউজার' };
-            
-            await database.ref(`users/${userId}/chats/${chatId}`).set({
-                withUserId: otherUserId,
-                withUserName: otherUser.name,
-                lastMessage: lastMessage,
-                lastMessageTime: timestamp,
-                unread: unread
-            });
         }
 
         // ইউজারের চ্যাট লিস্ট লোড
@@ -2005,6 +2025,7 @@
             const chatsRef = database.ref('chats');
             chatsRef.on('value', (snapshot) => {
                 let unreadCount = 0;
+                let processed = 0;
                 
                 snapshot.forEach((chatSnapshot) => {
                     const chatId = chatSnapshot.key;
@@ -2018,21 +2039,24 @@
                                     unreadCount++;
                                 }
                             });
+                            
+                            processed++;
+                            if (processed === snapshot.numChildren()) {
+                                const badge = document.getElementById('sellerUnreadBadge');
+                                if (badge) {
+                                    if (unreadCount > 0) {
+                                        badge.style.display = 'flex';
+                                        badge.textContent = unreadCount;
+                                    } else {
+                                        badge.style.display = 'none';
+                                    }
+                                }
+                            }
                         });
+                    } else {
+                        processed++;
                     }
                 });
-                
-                setTimeout(() => {
-                    const badge = document.getElementById('sellerUnreadBadge');
-                    if (badge) {
-                        if (unreadCount > 0) {
-                            badge.style.display = 'flex';
-                            badge.textContent = unreadCount;
-                        } else {
-                            badge.style.display = 'none';
-                        }
-                    }
-                }, 1000);
             });
         }
 

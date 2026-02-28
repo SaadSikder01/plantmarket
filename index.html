@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>প্ল্যান্ট মার্কেট - বাংলাদেশের প্রথম অনলাইন গাছের বাজার</title>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts - Bengali Friendly -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --accent: #ffd700;
+            --accent-dark: #ffc107;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray: #e9ecef;
+            --gray-dark: #dee2e6;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--gray-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* কাস্টম স্ক্রলবার */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* কন্টেইনার */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* হেডার */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--white), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* মোবাইল মেনু */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* নেভিগেশন */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* অথ বাটন */
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-login, .btn-register, .btn-logout {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+
+        .btn-login:hover {
+            background: var(--white);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .btn-register:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: var(--white);
+            padding: 8px 12px;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 15px;
+            border-radius: 30px;
+        }
+
+        .user-profile span {
+            font-weight: 600;
+            color: var(--white);
+            font-size: 15px;
+        }
+
+        .user-profile i {
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        /* সার্চ সেকশন */
+        .search-section {
+            background: var(--white);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--gray);
+            border-radius: 30px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        }
+
+        .search-container button {
+            padding: 0 30px;
+            background: var(--primary);
+            border: none;
+            border-radius: 30px;
+            color: var(--white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-container button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        /* ফিল্টার সেকশন */
+        .filter-section {
+            background: var(--white);
+            padding: 15px 0;
+            border-bottom: 1px solid var(--gray);
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* প্রোডাক্ট গ্রিড */
+        .products {
+            padding: 30px 0;
+            background: var(--gray-light);
+            min-height: calc(100vh - 250px);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        /* প্রোডাক্ট কার্ড */
+        .product-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            z-index: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .product-description {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .product-seller {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 15px;
+            padding: 8px 0;
+            border-top: 1px solid var(--gray);
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .product-seller i {
+            color: var(--primary);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-chat {
+            flex: 2;
+            padding: 10px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .btn-chat:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            flex: 1;
+            padding: 10px;
+            background: #25D366;
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        /* মোডাল */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            max-width: 400px;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+            box-shadow: var(--shadow-hover);
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .modal input, .modal select, .modal textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .modal input:focus, .modal select:focus, .modal textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* টোস্ট নোটিফিকেশন */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        .toast {
+            background: var(--white);
+            color: var(--text-dark);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--info); }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+        .toast.warning i { color: var(--warning); }
+        .toast.info i { color: var(--info); }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ড্যাশবোর্ড */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            background: var(--gray-light);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 25px 0;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .sidebar li:hover {
+            background: var(--gray-light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar li.active {
+            background: linear-gradient(90deg, rgba(46,125,50,0.1), transparent);
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .unread-badge {
+            position: absolute;
+            right: 15px;
+            background: var(--primary);
+            color: var(--white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* ফর্ম গ্রুপ */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 150px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-submit {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* চ্যাট সিস্টেম */
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 60px);
+            background: var(--white);
+        }
+
+        .chat-sidebar {
+            width: 300px;
+            border-right: 1px solid var(--gray);
+            background: var(--gray-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar h3 {
+            padding: 15px;
+            background: var(--primary);
+            color: var(--white);
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-search {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .chat-search input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray);
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .chat-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-user-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-user-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .chat-user-item:hover {
+            background: var(--gray);
+        }
+
+        .chat-user-item.active {
+            background: linear-gradient(90deg, rgba(46,125,50,0.1), transparent);
+            border-left: 3px solid var(--primary);
+        }
+
+        .chat-user-item.unread {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .chat-user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .chat-user-time {
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        .chat-last-message {
+            font-size: 12px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 25px;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-to-list {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .chat-header .user-info h3 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .chat-header .user-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .online-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            display: inline-block;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--gray-light);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+            clear: both;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            float: right;
+        }
+
+        .message.received {
+            float: left;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .message.sent .message-content {
+            background: var(--primary);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-content {
+            background: var(--white);
+            color: var(--text-dark);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 9px;
+            margin-top: 4px;
+            color: rgba(255,255,255,0.7);
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            color: var(--text-light);
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background: var(--white);
+            border-top: 1px solid var(--gray);
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid var(--gray);
+            border-radius: 20px;
+            resize: none;
+            font-size: 14px;
+            font-family: inherit;
+            max-height: 80px;
+            transition: var(--transition);
+        }
+
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* রেসপনসিভ ডিজাইন */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                padding: 15px 0;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links a {
+                display: inline-flex;
+                padding: 8px 20px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-container button {
+                padding: 12px;
+            }
+
+            .filter-container {
+                padding: 0 15px;
+            }
+
+            .filter-btn {
+                padding: 8px 20px;
+                font-size: 14px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+                padding: 0 15px;
+            }
+
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px 0;
+            }
+
+            .sidebar ul {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 15px;
+                gap: 8px;
+            }
+
+            .sidebar li {
+                white-space: nowrap;
+                padding: 8px 12px;
+            }
+
+            .chat-container {
+                flex-direction: column;
+                position: relative;
+            }
+
+            .chat-sidebar {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                left: -100%;
+                transition: left 0.3s ease;
+                z-index: 10;
+            }
+
+            .chat-sidebar.active {
+                left: 0;
+            }
+
+            .back-to-list {
+                display: block;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+
+            .btn-chat, .btn-whatsapp {
+                width: 100%;
+            }
+
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .chat-input-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .send-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- টোস্ট কন্টেইনার -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- হেডার -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <h1>প্ল্যান্ট মার্কেট</h1>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <ul class="nav-links">
+                        <li><a onclick="showHome()" class="active"><i class="fas fa-home"></i> হোম</a></li>
+                        <li><a id="sellerLink" style="display: none;" onclick="showSellerDashboard()"><i class="fas fa-store"></i> সেলার ড্যাশবোর্ড</a></li>
+                        <li><a id="chatHistoryLink" style="display: none;" onclick="showChatPage()"><i class="fas fa-comment"></i> চ্যাট</a></li>
+                    </ul>
+                    
+                    <div class="auth-buttons" id="authButtons">
+                        <button class="btn-login" onclick="showLoginModal()"><i class="fas fa-sign-in-alt"></i> লগইন</button>
+                        <button class="btn-register" onclick="showRegisterModal()"><i class="fas fa-user-plus"></i> রেজিস্টার</button>
+                    </div>
+                    
+                    <div class="user-profile" id="userProfile" style="display: none;">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userNameDisplay"></span>
+                        <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- হোম পেজ -->
+    <div id="homePage">
+        <!-- সার্চ সেকশন -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="আপনার পছন্দের গাছ খুঁজুন...">
+                <button onclick="searchProducts()"><i class="fas fa-search"></i> খুঁজুন</button>
+            </div>
+        </div>
+
+        <!-- ফিল্টার সেকশন -->
+        <div class="filter-section">
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="filterProducts('all')">সব গাছ</button>
+                <button class="filter-btn" onclick="filterProducts('fruit')">ফলের গাছ</button>
+                <button class="filter-btn" onclick="filterProducts('flower')">ফুলের গাছ</button>
+                <button class="filter-btn" onclick="filterProducts('herb')">ভেষজ গাছ</button>
+                <button class="filter-btn" onclick="filterProducts('indoor')">ইনডোর প্ল্যান্ট</button>
+                <button class="filter-btn" onclick="filterProducts('succulent')">সাকুলেন্ট</button>
+                <button class="filter-btn" onclick="filterProducts('cactus')">ক্যাকটাস</button>
+                <button class="filter-btn" onclick="filterProducts('rare')">রেয়ার প্ল্যান্ট</button>
+                <button class="filter-btn" onclick="filterProducts('other')">অন্যান্য</button>
+            </div>
+        </div>
+
+        <!-- প্রোডাক্ট গ্রিড -->
+        <section class="products">
+            <div class="product-grid" id="productGrid"></div>
+        </section>
+    </div>
+
+    <!-- সেলার ড্যাশবোর্ড -->
+    <div id="sellerDashboardPage" style="display: none;">
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <h3><i class="fas fa-store"></i> সেলার প্যানেল</h3>
+                <ul>
+                    <li class="active" onclick="showSection('addProduct', this)">
+                        <i class="fas fa-plus-circle"></i> নতুন পণ্য যোগ করুন
+                    </li>
+                    <li onclick="showSection('myProducts', this)">
+                        <i class="fas fa-tree"></i> আমার পণ্যসমূহ
+                    </li>
+                    <li onclick="showSection('chatList', this)" id="chatListMenuItem">
+                        <i class="fas fa-comments"></i> চ্যাট লিস্ট
+                        <span class="unread-badge" id="sellerUnreadBadge" style="display: none;">0</span>
+                    </li>
+                    <li onclick="showSection('profile', this)">
+                        <i class="fas fa-user"></i> প্রোফাইল
+                    </li>
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <!-- নতুন পণ্য যোগ করুন -->
+                <div id="addProduct" class="content-section active">
+                    <h2>নতুন গাছ যোগ করুন</h2>
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label>গাছের নাম *</label>
+                            <input type="text" id="productName" placeholder="যেমন: আম গাছ, জবা ফুল" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>বর্ণনা *</label>
+                            <textarea id="productDescription" rows="3" placeholder="গাছের বয়স, উচ্চতা, পরিচর্যা সম্পর্কে বিস্তারিত লিখুন" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>মূল্য (টাকায়) *</label>
+                            <input type="number" id="productPrice" placeholder="যেমন: ৫০০" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>ক্যাটাগরি *</label>
+                            <select id="productCategory" required>
+                                <option value="">ক্যাটাগরি নির্বাচন করুন</option>
+                                <option value="fruit">ফলের গাছ</option>
+                                <option value="flower">ফুলের গাছ</option>
+                                <option value="herb">ভেষজ গাছ</option>
+                                <option value="indoor">ইনডোর প্ল্যান্ট</option>
+                                <option value="succulent">সাকুলেন্ট</option>
+                                <option value="cactus">ক্যাকটাস</option>
+                                <option value="rare">রেয়ার প্ল্যান্ট</option>
+                                <option value="other">অন্যান্য</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>ছবি আপলোড করুন *</label>
+                            <input type="file" id="productImage" accept="image/*" required>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>WhatsApp নম্বর (ঐচ্ছিক)</label>
+                            <input type="text" id="whatsappNumber" placeholder="+8801XXXXXXXXX">
+                        </div>
+
+                        <button type="button" onclick="addProduct()" class="btn-submit">
+                            <i class="fas fa-cloud-upload-alt"></i> পণ্য যোগ করুন
+                        </button>
+                    </form>
+                </div>
+
+                <!-- আমার পণ্যসমূহ -->
+                <div id="myProducts" class="content-section">
+                    <h2>আমার পণ্যসমূহ</h2>
+                    <div id="sellerProductsGrid" class="product-grid"></div>
+                </div>
+
+                <!-- চ্যাট লিস্ট -->
+                <div id="chatList" class="content-section">
+                    <h2>চ্যাট সমূহ</h2>
+                    <div class="chat-search">
+                        <input type="text" id="chatSearch" placeholder="চ্যাট খুঁজুন..." onkeyup="searchSellerChats()">
+                    </div>
+                    <div id="chatListContainer" class="chat-user-list"></div>
+                </div>
+
+                <!-- প্রোফাইল -->
+                <div id="profile" class="content-section">
+                    <h2>আমার প্রোফাইল</h2>
+                    <div style="background: var(--white); padding: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                        <p style="margin-bottom: 12px;"><strong><i class="fas fa-user" style="color: var(--primary); margin-right: 8px;"></i> নাম:</strong> <span id="profileName"></span></p>
+                        <p style="margin-bottom: 12px;"><strong><i class="fas fa-envelope" style="color: var(--primary); margin-right: 8px;"></i> ইমেইল:</strong> <span id="profileEmail"></span></p>
+                        <p style="margin-bottom: 12px;"><strong><i class="fas fa-tree" style="color: var(--primary); margin-right: 8px;"></i> মোট পণ্য:</strong> <span id="totalProducts">0</span></p>
+                        <p style="margin-bottom: 12px;"><strong><i class="fas fa-calendar" style="color: var(--primary); margin-right: 8px;"></i> যোগদান:</strong> <span id="joinDate"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- চ্যাট পেজ -->
+    <div id="chatPage" style="display: none;">
+        <div class="chat-container">
+            <div class="chat-sidebar" id="chatSidebar">
+                <h3><i class="fas fa-comments"></i> চ্যাট সমূহ</h3>
+                <div class="chat-search">
+                    <input type="text" id="chatUserSearch" placeholder="ইউজার খুঁজুন..." onkeyup="searchChatUsers()">
+                </div>
+                <div class="chat-user-list" id="chatUserList"></div>
+            </div>
+
+            <div class="chat-main">
+                <div class="chat-header">
+                    <button class="back-to-list" onclick="toggleChatList()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="user-info">
+                        <h3 id="chatWithName">একটি চ্যাট নির্বাচন করুন</h3>
+                        <p id="chatWithStatus"><span class="online-status" id="onlineStatus" style="background: #dc3545;"></span> অফলাইন</p>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align: center; color: var(--text-light); padding: 40px;">
+                        <i class="fas fa-comment-dots" style="font-size: 40px; margin-bottom: 10px;"></i>
+                        <p>বাম পাশের তালিকা থেকে একটি চ্যাট নির্বাচন করুন</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                    <textarea id="messageInput" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
+                    <button onclick="sendMessage()" class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i> পাঠান
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- লগইন মোডাল -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2><i class="fas fa-sign-in-alt"></i> লগইন করুন</h2>
+            <form onsubmit="handleLogin(event)">
+                <input type="email" id="loginEmail" placeholder="ইমেইল" required>
+                <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> লগইন</button>
+                <p style="text-align: center; margin-top: 12px; font-size: 14px;">
+                    নতুন ইউজার? <a href="#" onclick="showRegisterModal(); closeModal('loginModal');">রেজিস্টার করুন</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- রেজিস্টার মোডাল -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2><i class="fas fa-user-plus"></i> নতুন অ্যাকাউন্ট</h2>
+            <form onsubmit="handleRegister(event)">
+                <input type="text" id="regName" placeholder="আপনার নাম" required>
+                <input type="email" id="regEmail" placeholder="ইমেইল" required>
+                <input type="password" id="regPassword" placeholder="পাসওয়ার্ড" required>
+                <select id="regUserType" required>
+                    <option value="">আপনি কি হতে চান?</option>
+                    <option value="buyer">ক্রেতা</option>
+                    <option value="seller">বিক্রেতা</option>
+                </select>
+                <button type="submit"><i class="fas fa-user-plus"></i> রেজিস্টার</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
+            authDomain: "naruto-76eb1.firebaseapp.com",
+            databaseURL: "https://naruto-76eb1-default-rtdb.firebaseio.com",
+            projectId: "naruto-76eb1",
+            storageBucket: "naruto-76eb1.firebasestorage.app",
+            messagingSenderId: "321658766206",
+            appId: "1:321658766206:web:ec60429bf933551692a92f"
+        };
+
+        // Firebase ইনিশিয়ালাইজ
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // ক্লাউডিনারি কনফিগারেশন
+        const CLOUD_NAME = 'dplj1p2gh';
+        const UPLOAD_PRESET = 'plant_market';
+
+        // গ্লোবাল ভেরিয়েবল
+        let currentUser = null;
+        let currentUserData = null;
+        let currentChatWith = null;
+        let currentChatId = null;
+        let currentProductId = null;
+        let chatListeners = {};
+
+        // লোকাল স্টোরেজে লগইন তথ্য সংরক্ষণ
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .then(() => {
+                console.log("Persistence set successfully");
+            })
+            .catch((error) => {
+                console.error("Persistence error:", error);
+            });
+
+        // টোস্ট নোটিফিকেশন
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                 type === 'error' ? 'fa-exclamation-circle' :
+                                 type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // অথেনটিকেশন স্টেট ট্র্যাক করা
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                const snapshot = await database.ref('users/' + user.uid).once('value');
+                currentUserData = snapshot.val();
+                
+                if (!currentUserData) {
+                    currentUserData = {
+                        name: user.email.split('@')[0],
+                        email: user.email,
+                        userType: 'buyer',
+                        createdAt: new Date().toISOString()
+                    };
+                    await database.ref('users/' + user.uid).set(currentUserData);
+                }
+                
+                document.getElementById('authButtons').style.display = 'none';
+                document.getElementById('userProfile').style.display = 'flex';
+                document.getElementById('chatHistoryLink').style.display = 'block';
+                
+                document.getElementById('userNameDisplay').textContent = currentUserData.name;
+                
+                if (currentUserData.userType === 'seller') {
+                    document.getElementById('sellerLink').style.display = 'block';
+                }
+                
+                await database.ref('users/' + user.uid).update({
+                    online: true,
+                    lastSeen: new Date().toISOString()
+                });
+                
+                loadAllProducts();
+                checkUnreadMessages();
+            } else {
+                currentUser = null;
+                currentUserData = null;
+                
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('sellerLink').style.display = 'none';
+                document.getElementById('chatHistoryLink').style.display = 'none';
+                
+                loadAllProducts();
+            }
+        });
+
+        // সব প্রোডাক্ট লোড
+        function loadAllProducts() {
+            database.ref('products').on('value', (snapshot) => {
+                const products = [];
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    product.id = childSnapshot.key;
+                    products.push(product);
+                });
+                products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                displayProducts(products, 'productGrid');
+            });
+        }
+
+        // প্রোডাক্ট ডিসপ্লে
+        function displayProducts(products, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = '';
+            
+            if (products.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 50px; color: var(--text-light);">কোন পণ্য পাওয়া যায়নি</div>';
+                return;
+            }
+            
+            products.forEach((product) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                
+                const categoryNames = {
+                    'fruit': 'ফলের গাছ',
+                    'flower': 'ফুলের গাছ',
+                    'herb': 'ভেষজ গাছ',
+                    'indoor': 'ইনডোর প্ল্যান্ট',
+                    'succulent': 'সাকুলেন্ট',
+                    'cactus': 'ক্যাকটাস',
+                    'rare': 'রেয়ার প্ল্যান্ট',
+                    'other': 'অন্যান্য'
+                };
+                
+                card.innerHTML = `
+                    <div class="product-badge">${categoryNames[product.category] || 'অন্যান্য'}</div>
+                    <img src="${product.imageUrl}" alt="${product.name}" class="product-image" loading="lazy">
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description.substring(0, 60)}${product.description.length > 60 ? '...' : ''}</p>
+                        <p class="product-price">৳ ${product.price}</p>
+                        <div class="product-seller">
+                            <i class="fas fa-store"></i> ${product.sellerName}
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn-chat" onclick="startChat('${product.sellerId}', '${product.sellerName}', '${product.id}')">
+                                <i class="fas fa-comment"></i> চ্যাট
+                            </button>
+                            ${product.whatsapp ? `
+                                <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="btn-whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // ক্লাউডিনারিতে ছবি আপলোড
+        async function uploadImageToCloudinary(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                return data.secure_url;
+            } catch (error) {
+                console.error('Error uploading to Cloudinary:', error);
+                throw error;
+            }
+        }
+
+        // প্রোডাক্ট যোগ করা
+        async function addProduct() {
+            try {
+                if (!currentUser) {
+                    showToast('error', 'পণ্য যোগ করতে লগইন করুন');
+                    return;
+                }
+
+                if (currentUserData.userType !== 'seller') {
+                    showToast('error', 'শুধুমাত্র বিক্রেতারা পণ্য যোগ করতে পারেন');
+                    return;
+                }
+
+                const name = document.getElementById('productName').value;
+                const description = document.getElementById('productDescription').value;
+                const price = document.getElementById('productPrice').value;
+                const category = document.getElementById('productCategory').value;
+                const whatsapp = document.getElementById('whatsappNumber').value;
+                const imageFile = document.getElementById('productImage').files[0];
+
+                if (!name || !description || !price || !category || !imageFile) {
+                    showToast('warning', 'সব ফিল্ড পূরণ করুন');
+                    return;
+                }
+
+                const submitBtn = event.target;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
+
+                const imageUrl = await uploadImageToCloudinary(imageFile);
+                
+                const product = {
+                    name: name,
+                    description: description,
+                    price: price,
+                    category: category,
+                    whatsapp: whatsapp || '',
+                    imageUrl: imageUrl,
+                    sellerId: currentUser.uid,
+                    sellerName: currentUserData.name,
+                    createdAt: new Date().toISOString(),
+                    status: 'active'
+                };
+
+                const newProductRef = database.ref('products').push();
+                await newProductRef.set(product);
+
+                const sellerRef = database.ref('sellers/' + currentUser.uid);
+                const snapshot = await sellerRef.once('value');
+                if (snapshot.exists()) {
+                    const currentCount = snapshot.val().totalProducts || 0;
+                    await sellerRef.update({ totalProducts: currentCount + 1 });
+                } else {
+                    await sellerRef.set({
+                        name: currentUserData.name,
+                        email: currentUserData.email,
+                        totalProducts: 1,
+                        joinedAt: new Date().toISOString()
+                    });
+                }
+
+                showToast('success', 'পণ্য সফলভাবে যোগ করা হয়েছে!');
+                
+                document.getElementById('productForm').reset();
+                document.getElementById('imagePreview').innerHTML = '';
+                
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> পণ্য যোগ করুন';
+                
+                showSection('myProducts', document.querySelector('.sidebar li:nth-child(2)'));
+                
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showToast('error', 'পণ্য যোগ করতে ব্যর্থ: ' + error.message);
+                
+                const submitBtn = document.querySelector('.btn-submit');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> পণ্য যোগ করুন';
+            }
+        }
+
+        // সেলারের প্রোডাক্ট লোড
+        function loadSellerProducts() {
+            if (!currentUser) return;
+            
+            database.ref('products').on('value', (snapshot) => {
+                const products = [];
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    if (product.sellerId === currentUser.uid) {
+                        product.id = childSnapshot.key;
+                        products.push(product);
+                    }
+                });
+                displayProducts(products, 'sellerProductsGrid');
+                
+                const totalElement = document.getElementById('totalProducts');
+                if (totalElement) {
+                    totalElement.textContent = products.length;
+                }
+            });
+        }
+
+        // চ্যাট ফাংশন - সম্পূর্ণ ফিক্সড
+        function startChat(sellerId, sellerName, productId) {
+            if (!currentUser) {
+                showToast('warning', 'চ্যাট করতে লগইন করুন');
+                showLoginModal();
+                return;
+            }
+            
+            if (sellerId === currentUser.uid) {
+                showToast('info', 'আপনি নিজের সাথে চ্যাট করতে পারবেন না');
+                return;
+            }
+            
+            currentChatWith = sellerId;
+            currentProductId = productId;
+            
+            const chatId = [currentUser.uid, sellerId, productId].sort().join('_');
+            currentChatId = chatId;
+            
+            showChatPage();
+            loadChat();
+        }
+
+        function loadChat() {
+            if (!currentChatId) return;
+            
+            if (chatListeners[currentChatId]) {
+                database.ref(`chats/${currentChatId}/messages`).off('value', chatListeners[currentChatId]);
+            }
+            
+            const messagesRef = database.ref(`chats/${currentChatId}/messages`);
+            
+            chatListeners[currentChatId] = messagesRef.on('value', (snapshot) => {
+                const messages = [];
+                snapshot.forEach((childSnapshot) => {
+                    const message = childSnapshot.val();
+                    message.id = childSnapshot.key;
+                    messages.push(message);
+                    
+                    if (message.receiverId === currentUser?.uid && !message.read) {
+                        database.ref(`chats/${currentChatId}/messages/${childSnapshot.key}/read`).set(true);
+                    }
+                });
+                
+                messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                displayMessages(messages);
+            });
+            
+            database.ref('users/' + currentChatWith).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    const user = snapshot.val();
+                    document.getElementById('chatWithName').textContent = user.name || 'ইউজার';
+                    
+                    const statusElement = document.getElementById('chatWithStatus');
+                    const onlineDot = document.getElementById('onlineStatus');
+                    
+                    if (user.online) {
+                        onlineDot.style.background = '#28a745';
+                        statusElement.innerHTML = '<span class="online-status" style="background: #28a745;"></span> অনলাইন';
+                    } else {
+                        onlineDot.style.background = '#dc3545';
+                        const lastSeen = user.lastSeen ? new Date(user.lastSeen).toLocaleString('bn-BD', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'অজানা';
+                        statusElement.innerHTML = `<span class="online-status" style="background: #dc3545;"></span> সর্বশেষ দেখা: ${lastSeen}`;
+                    }
+                }
+            });
+            
+            document.getElementById('chatInputArea').style.display = 'flex';
+            document.getElementById('chatMessages').innerHTML = '';
+        }
+
+        function displayMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: var(--text-light); padding: 30px;">কোন মেসেজ নেই। প্রথম মেসেজ পাঠান!</div>';
+                return;
+            }
+            
+            messages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.senderId === currentUser?.uid ? 'sent' : 'received'}`;
+                
+                const time = new Date(message.timestamp).toLocaleTimeString('bn-BD', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${message.text}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                
+                container.appendChild(messageDiv);
+            });
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) {
+                showToast('warning', 'মেসেজ লিখুন');
+                return;
+            }
+            
+            if (!currentUser) {
+                showToast('warning', 'লগইন করুন');
+                return;
+            }
+            
+            if (!currentChatWith || !currentChatId) {
+                showToast('error', 'কোন চ্যাট নির্বাচন করা হয়নি');
+                return;
+            }
+            
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            
+            const message = {
+                senderId: currentUser.uid,
+                receiverId: currentChatWith,
+                text: text,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            try {
+                // ১. প্রথমে মেসেজ সেভ করুন
+                await database.ref(`chats/${currentChatId}/messages`).push(message);
+                
+                // ২. লাস্ট মেসেজ আপডেট করুন
+                await database.ref(`chats/${currentChatId}/lastMessage`).set({
+                    text: text,
+                    timestamp: message.timestamp,
+                    senderId: currentUser.uid
+                });
+                
+                // ৩. ইউজারের চ্যাট লিস্ট আপডেট করুন (প্রেরকের জন্য)
+                const receiverSnapshot = await database.ref('users/' + currentChatWith).once('value');
+                const receiverData = receiverSnapshot.val() || { name: 'ইউজার' };
+                
+                await database.ref(`users/${currentUser.uid}/chats/${currentChatId}`).set({
+                    withUserId: currentChatWith,
+                    withUserName: receiverData.name || 'ইউজার',
+                    lastMessage: text,
+                    lastMessageTime: message.timestamp,
+                    unread: false
+                });
+                
+                // ৪. প্রাপকের চ্যাট লিস্ট আপডেট করুন
+                const senderSnapshot = await database.ref('users/' + currentUser.uid).once('value');
+                const senderData = senderSnapshot.val() || { name: 'ইউজার' };
+                
+                await database.ref(`users/${currentChatWith}/chats/${currentChatId}`).set({
+                    withUserId: currentUser.uid,
+                    withUserName: senderData.name || 'ইউজার',
+                    lastMessage: text,
+                    lastMessageTime: message.timestamp,
+                    unread: true
+                });
+                
+                input.value = '';
+                
+                const container = document.getElementById('chatMessages');
+                container.scrollTop = container.scrollHeight;
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showToast('error', 'মেসেজ পাঠাতে ব্যর্থ: ' + error.message);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        // ইউজারের চ্যাট লিস্ট লোড
+        function loadUserChatList() {
+            if (!currentUser) return;
+            
+            database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
+                const chats = [];
+                snapshot.forEach((childSnapshot) => {
+                    const chat = childSnapshot.val();
+                    chat.id = childSnapshot.key;
+                    chats.push(chat);
+                });
+                
+                chats.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+                displayChatList(chats);
+            });
+        }
+
+        function displayChatList(chats) {
+            const container = document.getElementById('chatUserList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (chats.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-light);">কোন চ্যাট নেই</div>';
+                return;
+            }
+            
+            chats.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-user-item ${chat.unread ? 'unread' : ''}`;
+                chatItem.onclick = () => {
+                    const ids = chat.id.split('_');
+                    currentChatWith = chat.withUserId;
+                    currentChatId = chat.id;
+                    
+                    for (let id of ids) {
+                        if (id !== currentUser.uid && id !== chat.withUserId) {
+                            currentProductId = id;
+                            break;
+                        }
+                    }
+                    
+                    loadChat();
+                    
+                    database.ref(`users/${currentUser.uid}/chats/${chat.id}/unread`).set(false);
+                    
+                    document.getElementById('chatSidebar').classList.remove('active');
+                };
+                
+                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                chatItem.innerHTML = `
+                    <div class="chat-user-name">
+                        <span>${chat.withUserName}</span>
+                        <span class="chat-user-time">${time}</span>
+                    </div>
+                    <div class="chat-last-message">${chat.lastMessage || 'কোন মেসেজ নেই'}</div>
+                    ${chat.unread ? '<span class="unread-badge">১</span>' : ''}
+                `;
+                
+                container.appendChild(chatItem);
+            });
+        }
+
+        // সেলারের চ্যাট লিস্ট
+        function loadSellerChatList() {
+            if (!currentUser) return;
+            
+            database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
+                const chats = [];
+                snapshot.forEach((childSnapshot) => {
+                    const chat = childSnapshot.val();
+                    chat.id = childSnapshot.key;
+                    chats.push(chat);
+                });
+                
+                chats.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+                displaySellerChatList(chats);
+            });
+        }
+
+        function displaySellerChatList(chats) {
+            const container = document.getElementById('chatListContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (chats.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-light);">কোন চ্যাট নেই</div>';
+                return;
+            }
+            
+            chats.forEach(chat => {
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-user-item ${chat.unread ? 'unread' : ''}`;
+                chatItem.onclick = () => {
+                    const ids = chat.id.split('_');
+                    currentChatWith = chat.withUserId;
+                    currentChatId = chat.id;
+                    
+                    for (let id of ids) {
+                        if (id !== currentUser.uid && id !== chat.withUserId) {
+                            currentProductId = id;
+                            break;
+                        }
+                    }
+                    
+                    showChatPage();
+                    loadChat();
+                    
+                    database.ref(`users/${currentUser.uid}/chats/${chat.id}/unread`).set(false);
+                };
+                
+                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                chatItem.innerHTML = `
+                    <div class="chat-user-name">
+                        <span>${chat.withUserName}</span>
+                        <span class="chat-user-time">${time}</span>
+                    </div>
+                    <div class="chat-last-message">${chat.lastMessage || 'কোন মেসেজ নেই'}</div>
+                    ${chat.unread ? '<span class="unread-badge">১</span>' : ''}
+                `;
+                
+                container.appendChild(chatItem);
+            });
+        }
+
+        // আনরিড মেসেজ চেক
+        function checkUnreadMessages() {
+            if (!currentUser) return;
+            
+            const chatsRef = database.ref('chats');
+            chatsRef.on('value', (snapshot) => {
+                let unreadCount = 0;
+                let processed = 0;
+                
+                snapshot.forEach((chatSnapshot) => {
+                    const chatId = chatSnapshot.key;
+                    
+                    if (chatId.includes(currentUser.uid)) {
+                        const messagesRef = database.ref(`chats/${chatId}/messages`);
+                        messagesRef.once('value', (msgSnapshot) => {
+                            msgSnapshot.forEach((msg) => {
+                                const message = msg.val();
+                                if (message.receiverId === currentUser.uid && !message.read) {
+                                    unreadCount++;
+                                }
+                            });
+                            
+                            processed++;
+                            if (processed === snapshot.numChildren()) {
+                                const badge = document.getElementById('sellerUnreadBadge');
+                                if (badge) {
+                                    if (unreadCount > 0) {
+                                        badge.style.display = 'flex';
+                                        badge.textContent = unreadCount;
+                                    } else {
+                                        badge.style.display = 'none';
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        processed++;
+                    }
+                });
+            });
+        }
+
+        // সার্চ ফাংশন
+        function searchChatUsers() {
+            const searchTerm = document.getElementById('chatUserSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#chatUserList .chat-user-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.chat-user-name span').textContent.toLowerCase();
+                item.style.display = name.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function searchSellerChats() {
+            const searchTerm = document.getElementById('chatSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#chatListContainer .chat-user-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.chat-user-name span').textContent.toLowerCase();
+                item.style.display = name.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // ফিল্টার ফাংশন
+        function filterProducts(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            database.ref('products').once('value', (snapshot) => {
+                const products = [];
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    product.id = childSnapshot.key;
+                    products.push(product);
+                });
+                
+                let filtered = products;
+                if (category !== 'all') {
+                    filtered = products.filter(product => product.category === category);
+                }
+                displayProducts(filtered, 'productGrid');
+            });
+        }
+
+        function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            database.ref('products').once('value', (snapshot) => {
+                const products = [];
+                snapshot.forEach((childSnapshot) => {
+                    const product = childSnapshot.val();
+                    product.id = childSnapshot.key;
+                    products.push(product);
+                });
+                
+                const searched = products.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) || 
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+                displayProducts(searched, 'productGrid');
+            });
+        }
+
+        // পেজ নেভিগেশন
+        function showHome() {
+            document.getElementById('homePage').style.display = 'block';
+            document.getElementById('sellerDashboardPage').style.display = 'none';
+            document.getElementById('chatPage').style.display = 'none';
+            
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            document.querySelector('.nav-links a').classList.add('active');
+        }
+
+        function showSellerDashboard() {
+            if (!currentUser) {
+                showToast('warning', 'লগইন করুন');
+                return;
+            }
+            if (currentUserData.userType !== 'seller') {
+                showToast('error', 'এই পৃষ্ঠা শুধুমাত্র বিক্রেতাদের জন্য');
+                return;
+            }
+            
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('sellerDashboardPage').style.display = 'block';
+            document.getElementById('chatPage').style.display = 'none';
+            
+            document.getElementById('profileName').textContent = currentUserData.name;
+            document.getElementById('profileEmail').textContent = currentUserData.email;
+            document.getElementById('joinDate').textContent = currentUserData.createdAt ? 
+                new Date(currentUserData.createdAt).toLocaleDateString('bn-BD') : 'অজানা';
+            
+            loadSellerProducts();
+            loadSellerChatList();
+        }
+
+        function showChatPage() {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('sellerDashboardPage').style.display = 'none';
+            document.getElementById('chatPage').style.display = 'block';
+            
+            loadUserChatList();
+        }
+
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('.sidebar li').forEach(item => {
+                item.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            if (sectionId === 'myProducts') {
+                loadSellerProducts();
+            } else if (sectionId === 'chatList') {
+                loadSellerChatList();
+            }
+        }
+
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleChatList() {
+            document.getElementById('chatSidebar').classList.toggle('active');
+        }
+
+        // মোডাল ফাংশন
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function showRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                closeModal('loginModal');
+                showToast('success', 'লগইন সফল হয়েছে!');
+            } catch (error) {
+                showToast('error', 'লগইন ব্যর্থ: ' + error.message);
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const userType = document.getElementById('regUserType').value;
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                const userData = {
+                    name: name,
+                    email: email,
+                    userType: userType,
+                    createdAt: new Date().toISOString(),
+                    online: true,
+                    lastSeen: new Date().toISOString()
+                };
+                
+                await database.ref('users/' + user.uid).set(userData);
+
+                if (userType === 'seller') {
+                    await database.ref('sellers/' + user.uid).set({
+                        name: name,
+                        email: email,
+                        totalProducts: 0,
+                        joinedAt: new Date().toISOString()
+                    });
+                }
+
+                closeModal('registerModal');
+                showToast('success', 'রেজিস্ট্রেশন সফল হয়েছে!');
+            } catch (error) {
+                showToast('error', 'রেজিস্ট্রেশন ব্যর্থ: ' + error.message);
+            }
+        }
+
+        function logout() {
+            if (currentUser) {
+                database.ref('users/' + currentUser.uid).update({
+                    online: false,
+                    lastSeen: new Date().toISOString()
+                });
+            }
+            auth.signOut();
+            showHome();
+            showToast('info', 'লগআউট করা হয়েছে');
+        }
+
+        // ইমেজ প্রিভিউ
+        document.addEventListener('DOMContentLoaded', function() {
+            const productImage = document.getElementById('productImage');
+            if (productImage) {
+                productImage.addEventListener('change', function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = '';
+                    
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            preview.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                });
+            }
+
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        window.onload = function() {
+            showHome();
+        };
+    </script>
+</body>
+</html>

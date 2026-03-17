@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>সেলার ড্যাশবোর্ড - প্ল্যান্ট মার্কেট</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --accent: #ffd700;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray: #e9ecef;
+            --danger: #dc3545;
+            --success: #28a745;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--gray-light);
+            color: var(--text-dark);
+        }
+
+        /* হেডার */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 25px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-links a.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        /* ড্যাশবোর্ড */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 30px 0;
+        }
+
+        .sidebar h3 {
+            padding: 0 20px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar li:hover {
+            background: var(--gray-light);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar li.active {
+            background: rgba(46,125,50,0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* ফর্ম */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            max-width: 150px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        .btn-submit {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* প্রোডাক্ট গ্রিড */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        /* চ্যাট লিস্ট */
+        .chat-user-list {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+
+        .chat-user-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .chat-user-item:hover {
+            background: var(--gray-light);
+        }
+
+        .chat-user-item.unread {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .chat-user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-last-message {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .unread-badge {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: var(--primary);
+            color: var(--white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        .chat-search {
+            margin-bottom: 15px;
+        }
+
+        .chat-search input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray);
+            border-radius: 25px;
+            font-size: 14px;
+        }
+
+        /* প্রোফাইল */
+        .profile-info {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .profile-info p {
+            margin-bottom: 15px;
+        }
+
+        .profile-info i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        /* টোস্ট */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        .toast {
+            background: var(--white);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <h1>প্ল্যান্ট মার্কেট</h1>
+                </div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="index.html"><i class="fas fa-home"></i> হোম</a></li>
+                        <li><a href="seller.html" class="active"><i class="fas fa-store"></i> ড্যাশবোর্ড</a></li>
+                        <li><a href="chat.html"><i class="fas fa-comment"></i> চ্যাট</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h3><i class="fas fa-store"></i> সেলার প্যানেল</h3>
+            <ul>
+                <li class="active" onclick="showSection('addProduct', this)">
+                    <i class="fas fa-plus-circle"></i> নতুন পণ্য
+                </li>
+                <li onclick="showSection('myProducts', this)">
+                    <i class="fas fa-tree"></i> আমার পণ্য
+                </li>
+                <li onclick="showSection('chatList', this)" id="chatListMenuItem">
+                    <i class="fas fa-comments"></i> চ্যাট লিস্ট
+                    <span class="unread-badge" id="unreadBadge" style="display: none;">0</span>
+                </li>
+                <li onclick="showSection('profile', this)">
+                    <i class="fas fa-user"></i> প্রোফাইল
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <!-- নতুন পণ্য -->
+            <div id="addProduct" class="content-section active">
+                <h2>নতুন গাছ যোগ করুন</h2>
+                <form id="productForm">
+                    <div class="form-group">
+                        <label>গাছের নাম *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>বর্ণনা *</label>
+                        <textarea id="productDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>মূল্য (টাকা) *</label>
+                        <input type="number" id="productPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ক্যাটাগরি *</label>
+                        <select id="productCategory" required>
+                            <option value="">নির্বাচন</option>
+                            <option value="fruit">ফলের গাছ</option>
+                            <option value="flower">ফুলের গাছ</option>
+                            <option value="herb">ভেষজ গাছ</option>
+                            <option value="indoor">ইনডোর</option>
+                            <option value="succulent">সাকুলেন্ট</option>
+                            <option value="cactus">ক্যাকটাস</option>
+                            <option value="rare">রেয়ার</option>
+                            <option value="other">অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ছবি *</label>
+                        <input type="file" id="productImage" accept="image/*" required>
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp (ঐচ্ছিক)</label>
+                        <input type="text" id="whatsappNumber" placeholder="+8801XXX">
+                    </div>
+                    <button type="button" onclick="addProduct()" class="btn-submit">
+                        <i class="fas fa-cloud-upload-alt"></i> যোগ করুন
+                    </button>
+                </form>
+            </div>
+
+            <!-- আমার পণ্য -->
+            <div id="myProducts" class="content-section">
+                <h2>আমার পণ্য</h2>
+                <div id="sellerProductsGrid" class="product-grid"></div>
+            </div>
+
+            <!-- চ্যাট লিস্ট -->
+            <div id="chatList" class="content-section">
+                <h2>চ্যাট সমূহ</h2>
+                <div class="chat-search">
+                    <input type="text" id="chatSearch" placeholder="খুঁজুন..." onkeyup="searchChats()">
+                </div>
+                <div id="chatListContainer" class="chat-user-list"></div>
+            </div>
+
+            <!-- প্রোফাইল -->
+            <div id="profile" class="content-section">
+                <h2>প্রোফাইল</h2>
+                <div class="profile-info">
+                    <p><i class="fas fa-user"></i> নাম: <span id="profileName"></span></p>
+                    <p><i class="fas fa-envelope"></i> ইমেইল: <span id="profileEmail"></span></p>
+                    <p><i class="fas fa-tree"></i> মোট পণ্য: <span id="totalProducts">0</span></p>
+                    <p><i class="fas fa-calendar"></i> যোগদান: <span id="joinDate"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
+            authDomain: "naruto-76eb1.firebaseapp.com",
+            databaseURL: "https://naruto-76eb1-default-rtdb.firebaseio.com",
+            projectId: "naruto-76eb1",
+            storageBucket: "naruto-76eb1.firebasestorage.app",
+            messagingSenderId: "321658766206",
+            appId: "1:321658766206:web:ec60429bf933551692a92f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        const CLOUD_NAME = 'dplj1p2gh';
+        const UPLOAD_PRESET = 'plant_market';
+
+        let currentUser = null;
+        let currentUserData = null;
+
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // অথ চেক
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                const snapshot = await database.ref('users/' + user.uid).once('value');
+                currentUserData = snapshot.val();
+
+                if (!currentUserData || currentUserData.userType !== 'seller') {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                document.getElementById('profileName').textContent = currentUserData.name;
+                document.getElementById('profileEmail').textContent = currentUserData.email;
+                document.getElementById('joinDate').textContent = currentUserData.createdAt ? 
+                    new Date(currentUserData.createdAt).toLocaleDateString('bn-BD') : 'অজানা';
+
+                loadSellerProducts();
+                loadChatList();
+                checkUnreadMessages();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // ক্লাউডিনারি আপলোড
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            return data.secure_url;
+        }
+
+        // প্রোডাক্ট যোগ
+        window.addProduct = async function() {
+            try {
+                const name = document.getElementById('productName').value;
+                const desc = document.getElementById('productDescription').value;
+                const price = document.getElementById('productPrice').value;
+                const cat = document.getElementById('productCategory').value;
+                const whatsapp = document.getElementById('whatsappNumber').value;
+                const file = document.getElementById('productImage').files[0];
+
+                if (!name || !desc || !price || !cat || !file) {
+                    showToast('warning', 'সব ফিল্ড পূরণ করুন');
+                    return;
+                }
+
+                const btn = event.target;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড...';
+
+                const imageUrl = await uploadImage(file);
+
+                await database.ref('products').push({
+                    name, description: desc, price, category: cat,
+                    whatsapp: whatsapp || '', imageUrl,
+                    sellerId: currentUser.uid, sellerName: currentUserData.name,
+                    createdAt: new Date().toISOString(), status: 'active'
+                });
+
+                const sellerRef = database.ref('sellers/' + currentUser.uid);
+                const snap = await sellerRef.once('value');
+                const total = (snap.val()?.totalProducts || 0) + 1;
+                await sellerRef.update({ totalProducts: total });
+
+                showToast('success', 'পণ্য যোগ হয়েছে');
+                document.getElementById('productForm').reset();
+                document.getElementById('imagePreview').innerHTML = '';
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> যোগ করুন';
+                showSection('myProducts', document.querySelector('.sidebar li:nth-child(2)'));
+
+            } catch (error) {
+                showToast('error', error.message);
+                const btn = document.querySelector('.btn-submit');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> যোগ করুন';
+            }
+        };
+
+        function loadSellerProducts() {
+            database.ref('products').on('value', (snapshot) => {
+                const products = [];
+                snapshot.forEach(child => {
+                    const p = child.val();
+                    if (p.sellerId === currentUser.uid) {
+                        p.id = child.key;
+                        products.push(p);
+                    }
+                });
+                displayProducts(products);
+                document.getElementById('totalProducts').textContent = products.length;
+            });
+        }
+
+        function displayProducts(products) {
+            const grid = document.getElementById('sellerProductsGrid');
+            grid.innerHTML = '';
+
+            if (products.length === 0) {
+                grid.innerHTML = '<p style="text-align: center;">কোন পণ্য নেই</p>';
+                return;
+            }
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${p.imageUrl}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-name">${p.name}</h3>
+                        <p class="product-price">৳ ${p.price}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function loadChatList() {
+            database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
+                const chats = [];
+                snapshot.forEach(child => {
+                    chats.push({ id: child.key, ...child.val() });
+                });
+                chats.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+                displayChatList(chats);
+            });
+        }
+
+        function displayChatList(chats) {
+            const container = document.getElementById('chatListContainer');
+            container.innerHTML = '';
+
+            if (chats.length === 0) {
+                container.innerHTML = '<p style="padding: 20px;">কোন চ্যাট নেই</p>';
+                return;
+            }
+
+            chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = `chat-user-item ${chat.unread ? 'unread' : ''}`;
+                item.onclick = () => {
+                    window.location.href = `chat.html?user=${chat.withUserId}`;
+                };
+                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD');
+                item.innerHTML = `
+                    <div class="chat-user-name">
+                        <span>${chat.withUserName}</span>
+                        <span>${time}</span>
+                    </div>
+                    <div class="chat-last-message">${chat.lastMessage || ''}</div>
+                    ${chat.unread ? '<span class="unread-badge">১</span>' : ''}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.searchChats = function() {
+            const term = document.getElementById('chatSearch').value.toLowerCase();
+            document.querySelectorAll('#chatListContainer .chat-user-item').forEach(item => {
+                const name = item.querySelector('.chat-user-name span').textContent.toLowerCase();
+                item.style.display = name.includes(term) ? 'block' : 'none';
+            });
+        };
+
+        function checkUnreadMessages() {
+            database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
+                let unread = 0;
+                snapshot.forEach(child => {
+                    if (child.val().unread) unread++;
+                });
+                const badge = document.getElementById('unreadBadge');
+                if (unread > 0) {
+                    badge.style.display = 'flex';
+                    badge.textContent = unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        window.showSection = function(id, el) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
+
+            if (id === 'myProducts') loadSellerProducts();
+            if (id === 'chatList') loadChatList();
+        };
+
+        // ইমেজ প্রিভিউ
+        document.getElementById('productImage')?.addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

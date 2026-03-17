@@ -441,7 +441,7 @@
             }
         }
 
-        /* মোবাইল */
+        /* মোবাইল রেসপনসিভ ফিক্স */
         @media (max-width: 768px) {
             .chat-sidebar {
                 width: 100%;
@@ -462,6 +462,64 @@
 
             .message-image {
                 max-width: 150px;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .chat-header {
+                padding: 10px 15px;
+            }
+
+            .user-info h3 {
+                font-size: 14px;
+            }
+
+            .user-info p {
+                font-size: 11px;
+            }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .logo h1 {
+                font-size: 20px;
+            }
+
+            .chat-input-area {
+                flex-wrap: wrap;
+            }
+
+            .chat-input-area textarea {
+                width: 100%;
+                order: 1;
+            }
+
+            .image-upload-btn {
+                order: 2;
+            }
+
+            .send-btn {
+                order: 3;
             }
         }
     </style>

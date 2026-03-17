@@ -133,6 +133,7 @@
             align-items: center;
             gap: 10px;
             border-left: 3px solid transparent;
+            position: relative;
         }
 
         .sidebar li:hover {
@@ -145,6 +146,20 @@
             border-left-color: var(--primary);
             color: var(--primary);
             font-weight: 600;
+        }
+
+        .unread-badge {
+            position: absolute;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
         }
 
         .main-content {
@@ -231,6 +246,7 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow);
+            position: relative;
         }
 
         .product-image {
@@ -253,6 +269,31 @@
             color: var(--primary);
             font-weight: 700;
             font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* ডিলিট বাটন */
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0.8;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
 
         /* চ্যাট লিস্ট */
@@ -288,21 +329,9 @@
         .chat-last-message {
             font-size: 13px;
             color: var(--text-light);
-        }
-
-        .unread-badge {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            background: var(--primary);
-            color: var(--white);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .chat-search {
@@ -368,10 +397,76 @@
                 opacity: 1;
             }
         }
+
+        /* কনফার্ম মোডাল */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+        }
+
+        .confirm-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .confirm-content h3 {
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+
+        .confirm-content p {
+            margin-bottom: 20px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 8px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .confirm-btn.yes {
+            background: var(--danger);
+            color: white;
+        }
+
+        .confirm-btn.no {
+            background: var(--gray);
+        }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- কনফার্ম মোডাল -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> নিশ্চিত করুন</h3>
+            <p id="confirmMessage">আপনি কি এই পণ্যটি ডিলিট করতে চান?</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn yes" onclick="confirmDelete()">হ্যাঁ</button>
+                <button class="confirm-btn no" onclick="closeConfirmModal()">না</button>
+            </div>
+        </div>
+    </div>
 
     <header class="header">
         <div class="container">
@@ -457,7 +552,7 @@
                 </form>
             </div>
 
-            <!-- আমার পণ্য -->
+            <!-- আমার পণ্য (ডিলিট অপশন সহ) -->
             <div id="myProducts" class="content-section">
                 <h2>আমার পণ্য</h2>
                 <div id="sellerProductsGrid" class="product-grid"></div>
@@ -511,6 +606,7 @@
 
         let currentUser = null;
         let currentUserData = null;
+        let productToDelete = null;
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -522,6 +618,38 @@
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        // কনফার্ম মোডাল
+        window.showConfirmModal = function(productId) {
+            productToDelete = productId;
+            document.getElementById('confirmModal').style.display = 'flex';
+        };
+
+        window.closeConfirmModal = function() {
+            document.getElementById('confirmModal').style.display = 'none';
+            productToDelete = null;
+        };
+
+        window.confirmDelete = async function() {
+            if (!productToDelete) return;
+            
+            try {
+                await database.ref('products/' + productToDelete).remove();
+                
+                // সেলারের টোটাল প্রোডাক্ট কাউন্ট আপডেট
+                const sellerRef = database.ref('sellers/' + currentUser.uid);
+                const snap = await sellerRef.once('value');
+                const total = (snap.val()?.totalProducts || 1) - 1;
+                await sellerRef.update({ totalProducts: total });
+                
+                showToast('success', 'পণ্য ডিলিট হয়েছে');
+                loadSellerProducts();
+            } catch (error) {
+                showToast('error', error.message);
+            }
+            
+            closeConfirmModal();
+        };
 
         // অথ চেক
         auth.onAuthStateChanged(async (user) => {
@@ -639,6 +767,9 @@
                 card.className = 'product-card';
                 card.innerHTML = `
                     <img src="${p.imageUrl}" class="product-image">
+                    <button class="delete-btn" onclick="showConfirmModal('${p.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
                     <div class="product-info">
                         <h3 class="product-name">${p.name}</h3>
                         <p class="product-price">৳ ${p.price}</p>
@@ -704,7 +835,7 @@
                 const badge = document.getElementById('unreadBadge');
                 if (unread > 0) {
                     badge.style.display = 'flex';
-                    badge.textContent = unread;
+                    badge.textContent = unread > 9 ? '9+' : unread;
                 } else {
                     badge.style.display = 'none';
                 }

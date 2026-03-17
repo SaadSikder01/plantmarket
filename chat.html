@@ -245,12 +245,14 @@
             display: inline-block;
         }
 
-        /* মেসেজ এরিয়া */
+        /* মেসেজ এরিয়া - মোবাইলের জন্য ফিক্স */
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
             background: var(--gray-light);
+            height: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
@@ -466,6 +468,7 @@
 
             .message {
                 max-width: 85%;
+                margin-bottom: 12px;
             }
 
             .chat-header {
@@ -483,6 +486,18 @@
             .toast-container {
                 left: 20px;
                 right: 20px;
+            }
+
+            /* মেসেজ কন্টেইনার হাইট ফিক্স */
+            .chat-messages {
+                height: calc(100vh - 140px);
+                padding: 15px;
+            }
+
+            /* মেসেজ কন্টেন্ট সঠিকভাবে দেখানোর জন্য */
+            .message-content {
+                max-width: 100%;
+                word-break: break-word;
             }
         }
 
@@ -507,11 +522,13 @@
 
             .chat-input-area {
                 flex-wrap: wrap;
+                padding: 10px;
             }
 
             .chat-input-area textarea {
                 width: 100%;
                 order: 1;
+                margin-bottom: 5px;
             }
 
             .image-upload-btn {
@@ -520,6 +537,10 @@
 
             .send-btn {
                 order: 3;
+            }
+
+            .message {
+                max-width: 90%;
             }
         }
     </style>
@@ -675,7 +696,6 @@
                     senderId: currentUser.uid
                 });
 
-                // চ্যাট লিস্ট আপডেট
                 await updateChatLists('📷 ছবি', message.timestamp);
 
                 fileInput.value = '';

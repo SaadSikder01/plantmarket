@@ -38,7 +38,6 @@
             color: var(--text-dark);
         }
 
-        /* হেডার */
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: var(--white);
@@ -102,7 +101,6 @@
             color: var(--primary-dark);
         }
 
-        /* ড্যাশবোর্ড */
         .dashboard-container {
             display: flex;
             min-height: calc(100vh - 70px);
@@ -176,7 +174,6 @@
             display: block;
         }
 
-        /* ফর্ম */
         .form-group {
             margin-bottom: 20px;
         }
@@ -233,7 +230,6 @@
             cursor: not-allowed;
         }
 
-        /* প্রোডাক্ট গ্রিড */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -272,7 +268,6 @@
             margin-bottom: 10px;
         }
 
-        /* ডিলিট বাটন */
         .delete-btn {
             position: absolute;
             top: 10px;
@@ -296,7 +291,6 @@
             transform: scale(1.1);
         }
 
-        /* চ্যাট লিস্ট */
         .chat-user-list {
             background: var(--white);
             border-radius: var(--border-radius);
@@ -346,7 +340,6 @@
             font-size: 14px;
         }
 
-        /* প্রোফাইল */
         .profile-info {
             background: var(--white);
             padding: 25px;
@@ -363,7 +356,6 @@
             margin-right: 8px;
         }
 
-        /* টোস্ট */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -398,7 +390,6 @@
             }
         }
 
-        /* কনফার্ম মোডাল */
         .confirm-modal {
             position: fixed;
             top: 0;
@@ -452,7 +443,6 @@
             background: var(--gray);
         }
 
-        /* মোবাইল রেসপনসিভ ফিক্স */
         @media (max-width: 768px) {
             .dashboard-container {
                 flex-direction: column;
@@ -536,7 +526,6 @@
 <body>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- কনফার্ম মোডাল -->
     <div class="confirm-modal" id="confirmModal">
         <div class="confirm-content">
             <h3><i class="fas fa-exclamation-triangle"></i> নিশ্চিত করুন</h3>
@@ -587,7 +576,6 @@
         </div>
 
         <div class="main-content">
-            <!-- নতুন পণ্য -->
             <div id="addProduct" class="content-section active">
                 <h2>নতুন গাছ যোগ করুন</h2>
                 <form id="productForm">
@@ -632,13 +620,11 @@
                 </form>
             </div>
 
-            <!-- আমার পণ্য -->
             <div id="myProducts" class="content-section">
                 <h2>আমার পণ্য</h2>
                 <div id="sellerProductsGrid" class="product-grid"></div>
             </div>
 
-            <!-- চ্যাট লিস্ট -->
             <div id="chatList" class="content-section">
                 <h2>চ্যাট সমূহ</h2>
                 <div class="chat-search">
@@ -647,7 +633,6 @@
                 <div id="chatListContainer" class="chat-user-list"></div>
             </div>
 
-            <!-- প্রোফাইল -->
             <div id="profile" class="content-section">
                 <h2>প্রোফাইল</h2>
                 <div class="profile-info">
@@ -660,13 +645,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
             authDomain: "naruto-76eb1.firebaseapp.com",
@@ -699,7 +682,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // কনফার্ম মোডাল
         window.showConfirmModal = function(productId) {
             productToDelete = productId;
             document.getElementById('confirmModal').style.display = 'flex';
@@ -730,7 +712,6 @@
             closeConfirmModal();
         };
 
-        // অথ চেক
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
@@ -755,7 +736,6 @@
             }
         });
 
-        // ক্লাউডিনারি আপলোড
         async function uploadImage(file) {
             const formData = new FormData();
             formData.append('file', file);
@@ -768,7 +748,6 @@
             return data.secure_url;
         }
 
-        // প্রোডাক্ট যোগ
         window.addProduct = async function() {
             try {
                 const name = document.getElementById('productName').value;
@@ -912,11 +891,13 @@
                     if (child.val().unread) unread++;
                 });
                 const badge = document.getElementById('unreadBadge');
-                if (unread > 0) {
-                    badge.style.display = 'flex';
-                    badge.textContent = unread > 9 ? '9+' : unread;
-                } else {
-                    badge.style.display = 'none';
+                if (badge) {
+                    if (unread > 0) {
+                        badge.style.display = 'flex';
+                        badge.textContent = unread > 9 ? '9+' : unread;
+                    } else {
+                        badge.style.display = 'none';
+                    }
                 }
             });
         }
@@ -931,7 +912,6 @@
             if (id === 'chatList') loadChatList();
         };
 
-        // ইমেজ প্রিভিউ
         document.getElementById('productImage')?.addEventListener('change', function(e) {
             const preview = document.getElementById('imagePreview');
             preview.innerHTML = '';

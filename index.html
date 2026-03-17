@@ -114,6 +114,7 @@
             list-style: none;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -594,6 +595,10 @@
                 display: block;
             }
 
+            .header-content {
+                position: relative;
+            }
+
             .nav-menu {
                 display: none;
                 width: 100%;
@@ -624,15 +629,18 @@
                 justify-content: center;
             }
 
+            /* চ্যাট আইকন সবসময় visible থাকবে - ডেস্কটপের মতো */
             #chatLink {
                 display: flex !important;
                 position: relative;
+                order: -1; /* চ্যাট আইকন উপরে রাখার জন্য */
             }
 
             .auth-buttons {
                 flex-direction: column;
                 width: 100%;
                 gap: 10px;
+                margin-top: 10px;
             }
 
             .btn-login, .btn-register {
@@ -644,6 +652,7 @@
             .user-profile {
                 width: 100%;
                 justify-content: center;
+                margin-top: 10px;
             }
 
             .search-container {
@@ -658,6 +667,31 @@
             .product-grid {
                 grid-template-columns: 1fr;
                 padding: 0 10px;
+            }
+
+            .modal-content {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 20px;
+            }
+
+            .filter-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .product-card {
+                margin: 0 5px;
             }
         }
     </style>
@@ -682,7 +716,7 @@
                         <li><a href="index.html" class="active"><i class="fas fa-home"></i> হোম</a></li>
                         <li><a id="sellerLink" style="display: none;" href="seller.html"><i class="fas fa-store"></i> সেলার</a></li>
                         <li>
-                            <a id="chatLink" style="display: none;" href="chat.html">
+                            <a id="chatLink" href="chat.html">
                                 <i class="fas fa-comment"></i> চ্যাট
                                 <span id="chatNotification" class="notification-badge" style="display: none;">0</span>
                             </a>
@@ -846,12 +880,14 @@
 
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userProfile').style.display = 'flex';
-                document.getElementById('chatLink').style.display = 'block';
                 document.getElementById('userNameDisplay').textContent = currentUserData.name;
 
                 if (currentUserData.userType === 'seller') {
                     document.getElementById('sellerLink').style.display = 'block';
                 }
+
+                // চ্যাট আইকন সবসময় visible থাকবে
+                document.getElementById('chatLink').style.display = 'flex';
 
                 await database.ref('users/' + user.uid).update({
                     online: true,
@@ -867,7 +903,9 @@
                 document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userProfile').style.display = 'none';
                 document.getElementById('sellerLink').style.display = 'none';
-                document.getElementById('chatLink').style.display = 'none';
+                
+                // চ্যাট আইকন সবসময় visible থাকবে (লগইন না করলেও)
+                document.getElementById('chatLink').style.display = 'flex';
                 
                 const badge = document.getElementById('chatNotification');
                 if (badge) badge.style.display = 'none';

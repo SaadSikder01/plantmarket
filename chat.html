@@ -84,6 +84,7 @@
             text-decoration: none;
             padding: 8px 15px;
             border-radius: 25px;
+            transition: var(--transition);
         }
 
         .nav-links a:hover {
@@ -180,6 +181,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            padding-right: 25px;
         }
 
         .unread-badge {
@@ -286,6 +288,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
+        /* ইমেজ মেসেজ */
+        .message-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
         .message-time {
             font-size: 9px;
             margin-top: 4px;
@@ -323,6 +333,28 @@
             border-color: var(--primary);
         }
 
+        .image-upload-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .image-upload-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
         .send-btn {
             padding: 10px 20px;
             background: var(--primary);
@@ -344,6 +376,34 @@
         .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        /* ইমেজ প্রিভিউ */
+        .image-preview-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+        }
+
+        .image-preview-container img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .close-preview {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
         }
 
         /* টোস্ট */
@@ -399,11 +459,21 @@
             .back-to-list {
                 display: block;
             }
+
+            .message-image {
+                max-width: 150px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ইমেজ প্রিভিউ মোডাল -->
+    <div class="image-preview-container" id="imagePreviewModal" onclick="this.style.display='none'">
+        <span class="close-preview">&times;</span>
+        <img id="previewImage" src="" alt="Preview">
+    </div>
 
     <header class="header">
         <div class="container">
@@ -453,6 +523,10 @@
             </div>
 
             <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
+                <button class="image-upload-btn" onclick="document.getElementById('imageInput').click()">
+                    <i class="fas fa-image"></i>
+                </button>
                 <textarea id="messageInput" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
                 <button onclick="sendMessage()" class="send-btn" id="sendBtn">
                     <i class="fas fa-paper-plane"></i> পাঠান
@@ -482,6 +556,9 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
+        const CLOUD_NAME = 'dplj1p2gh';
+        const UPLOAD_PRESET = 'plant_market';
+
         let currentUser = null;
         let currentChatWith = null;
         let currentChatId = null;
@@ -499,6 +576,58 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
+        // ক্লাউডিনারি ইমেজ আপলোড
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', UPLOAD_PRESET);
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            return data.secure_url;
+        }
+
+        // ইমেজ পাঠানো
+        window.sendImage = async function() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            if (!file || !currentChatId) return;
+
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+
+            try {
+                const imageUrl = await uploadImage(file);
+
+                const message = {
+                    senderId: currentUser.uid,
+                    receiverId: currentChatWith,
+                    type: 'image',
+                    imageUrl: imageUrl,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                };
+
+                await database.ref(`chats/${currentChatId}/messages`).push(message);
+                await database.ref(`chats/${currentChatId}/lastMessage`).set({
+                    text: '📷 ছবি',
+                    timestamp: message.timestamp,
+                    senderId: currentUser.uid
+                });
+
+                // চ্যাট লিস্ট আপডেট
+                await updateChatLists('📷 ছবি', message.timestamp);
+
+                fileInput.value = '';
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
         // অথ চেক
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -507,7 +636,6 @@
             }
             currentUser = user;
 
-            // URL থেকে প্যারামিটার নেওয়া
             const params = new URLSearchParams(window.location.search);
             const sellerId = params.get('seller');
             const productId = params.get('product');
@@ -519,9 +647,7 @@
                 currentChatId = [currentUser.uid, sellerId, productId].sort().join('_');
                 loadChat();
             } else if (chatUserId) {
-                // চ্যাট লিস্ট থেকে আসলে
                 currentChatWith = chatUserId;
-                // productId বের করা দরকার
                 const chats = await database.ref(`users/${currentUser.uid}/chats`).once('value');
                 chats.forEach(child => {
                     const chat = child.val();
@@ -541,6 +667,22 @@
 
             loadUserChatList();
         });
+
+        async function updateChatLists(lastMessageText, timestamp) {
+            const receiver = await database.ref('users/' + currentChatWith).once('value');
+            const receiverName = receiver.val()?.name || 'ইউজার';
+            await database.ref(`users/${currentUser.uid}/chats/${currentChatId}`).set({
+                withUserId: currentChatWith, withUserName: receiverName,
+                lastMessage: lastMessageText, lastMessageTime: timestamp, unread: false
+            });
+
+            const sender = await database.ref('users/' + currentUser.uid).once('value');
+            const senderName = sender.val()?.name || 'ইউজার';
+            await database.ref(`users/${currentChatWith}/chats/${currentChatId}`).set({
+                withUserId: currentUser.uid, withUserName: senderName,
+                lastMessage: lastMessageText, lastMessageTime: timestamp, unread: true
+            });
+        }
 
         function loadUserChatList() {
             database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
@@ -653,17 +795,33 @@
                 const div = document.createElement('div');
                 div.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
                 const time = new Date(msg.timestamp).toLocaleTimeString('bn-BD');
-                div.innerHTML = `
-                    <div class="message-content">
-                        ${msg.text}
-                        <div class="message-time">${time}</div>
-                    </div>
-                `;
+
+                if (msg.type === 'image') {
+                    div.innerHTML = `
+                        <div class="message-content">
+                            <img src="${msg.imageUrl}" class="message-image" onclick="showImagePreview('${msg.imageUrl}')">
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="message-content">
+                            ${msg.text}
+                            <div class="message-time">${time}</div>
+                        </div>
+                    `;
+                }
+
                 container.appendChild(div);
             });
 
             container.scrollTop = container.scrollHeight;
         }
+
+        window.showImagePreview = function(url) {
+            document.getElementById('previewImage').src = url;
+            document.getElementById('imagePreviewModal').style.display = 'flex';
+        };
 
         window.sendMessage = async function() {
             const input = document.getElementById('messageInput');
@@ -676,7 +834,8 @@
             const message = {
                 senderId: currentUser.uid,
                 receiverId: currentChatWith,
-                text,
+                type: 'text',
+                text: text,
                 timestamp: new Date().toISOString(),
                 read: false
             };
@@ -684,22 +843,12 @@
             try {
                 await database.ref(`chats/${currentChatId}/messages`).push(message);
                 await database.ref(`chats/${currentChatId}/lastMessage`).set({
-                    text, timestamp: message.timestamp, senderId: currentUser.uid
+                    text: text,
+                    timestamp: message.timestamp,
+                    senderId: currentUser.uid
                 });
 
-                const receiver = await database.ref('users/' + currentChatWith).once('value');
-                const receiverName = receiver.val()?.name || 'ইউজার';
-                await database.ref(`users/${currentUser.uid}/chats/${currentChatId}`).set({
-                    withUserId: currentChatWith, withUserName: receiverName,
-                    lastMessage: text, lastMessageTime: message.timestamp, unread: false
-                });
-
-                const sender = await database.ref('users/' + currentUser.uid).once('value');
-                const senderName = sender.val()?.name || 'ইউজার';
-                await database.ref(`users/${currentChatWith}/chats/${currentChatId}`).set({
-                    withUserId: currentUser.uid, withUserName: senderName,
-                    lastMessage: text, lastMessageTime: message.timestamp, unread: true
-                });
+                await updateChatLists(text, message.timestamp);
 
                 input.value = '';
             } catch (error) {
@@ -709,12 +858,10 @@
             }
         };
 
-        // মোবাইল সাইডবার টগল
         window.toggleSidebar = function() {
             document.getElementById('chatSidebar').classList.toggle('active');
         };
 
-        // এন্টার চাপলে সেন্ড
         document.getElementById('messageInput')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();

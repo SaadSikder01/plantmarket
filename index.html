@@ -588,7 +588,7 @@
             }
         }
 
-        /* মোবাইল রেসপনসিভ ফিক্স */
+        /* মোবাইল রেসপনসিভ */
         @media (max-width: 768px) {
             .mobile-menu-btn {
                 display: block;
@@ -624,7 +624,6 @@
                 justify-content: center;
             }
 
-            /* চ্যাট আইকন সবসময় visible থাকবে */
             #chatLink {
                 display: flex !important;
                 position: relative;
@@ -659,46 +658,6 @@
             .product-grid {
                 grid-template-columns: 1fr;
                 padding: 0 10px;
-            }
-
-            .modal-content {
-                margin: 20px;
-                padding: 20px;
-            }
-
-            .toast-container {
-                left: 20px;
-                right: 20px;
-            }
-
-            /* মোবাইলে মেসেজ ঠিকভাবে দেখানোর জন্য */
-            .chat-messages {
-                height: calc(100vh - 140px);
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .message {
-                max-width: 85%;
-            }
-
-            .message-content {
-                word-break: break-word;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 20px;
-            }
-
-            .filter-btn {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-
-            .product-card {
-                margin: 0 5px;
             }
         }
     </style>
@@ -834,7 +793,6 @@
         let currentUser = null;
         let currentUserData = null;
 
-        // লোকাল স্টোরেজ
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         function showToast(type, message) {
@@ -849,7 +807,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // নোটিফিকেশন চেক
         function checkNotifications() {
             if (!currentUser) return;
             
@@ -860,28 +817,39 @@
                 });
                 
                 const badge = document.getElementById('chatNotification');
-                if (totalUnread > 0) {
-                    badge.style.display = 'flex';
-                    badge.textContent = totalUnread > 9 ? '9+' : totalUnread;
-                } else {
-                    badge.style.display = 'none';
+                if (badge) {
+                    if (totalUnread > 0) {
+                        badge.style.display = 'flex';
+                        badge.textContent = totalUnread > 9 ? '9+' : totalUnread;
+                    } else {
+                        badge.style.display = 'none';
+                    }
                 }
             });
         }
 
-        // অথ স্টেট
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
                 const snapshot = await database.ref('users/' + user.uid).once('value');
                 currentUserData = snapshot.val();
 
+                if (!currentUserData) {
+                    currentUserData = {
+                        name: user.email.split('@')[0],
+                        email: user.email,
+                        userType: 'buyer',
+                        createdAt: new Date().toISOString()
+                    };
+                    await database.ref('users/' + user.uid).set(currentUserData);
+                }
+
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userProfile').style.display = 'flex';
                 document.getElementById('chatLink').style.display = 'block';
-                document.getElementById('userNameDisplay').textContent = currentUserData?.name || 'ইউজার';
+                document.getElementById('userNameDisplay').textContent = currentUserData.name;
 
-                if (currentUserData?.userType === 'seller') {
+                if (currentUserData.userType === 'seller') {
                     document.getElementById('sellerLink').style.display = 'block';
                 }
 
@@ -895,16 +863,19 @@
             } else {
                 currentUser = null;
                 currentUserData = null;
+                
                 document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userProfile').style.display = 'none';
                 document.getElementById('sellerLink').style.display = 'none';
                 document.getElementById('chatLink').style.display = 'none';
-                document.getElementById('chatNotification').style.display = 'none';
+                
+                const badge = document.getElementById('chatNotification');
+                if (badge) badge.style.display = 'none';
+                
                 loadProducts();
             }
         });
 
-        // প্রোডাক্ট লোড
         function loadProducts() {
             database.ref('products').on('value', (snapshot) => {
                 const products = [];
@@ -960,7 +931,6 @@
             });
         }
 
-        // ফিল্টার
         window.filterProducts = function(category) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
@@ -994,7 +964,6 @@
             });
         };
 
-        // চ্যাট স্টার্ট
         window.startChat = function(sellerId, productId) {
             if (!currentUser) {
                 showToast('warning', 'চ্যাট করতে লগইন করুন');
@@ -1008,7 +977,6 @@
             window.location.href = `chat.html?seller=${sellerId}&product=${productId}`;
         };
 
-        // মোডাল
         window.showLoginModal = function() {
             document.getElementById('loginModal').style.display = 'block';
         };
@@ -1076,7 +1044,6 @@
             showToast('info', 'লগআউট');
         };
 
-        // মোবাইল মেনু
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
             document.getElementById('navMenu').classList.toggle('active');
         });
@@ -1087,7 +1054,6 @@
             }
         };
 
-        // পেজ লোড
         window.onload = function() {
             loadProducts();
         };

@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>চ্যাট - প্ল্যান্ট মার্কেট</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --white: #ffffff;
+            --gray-light: #f8f9fa;
+            --gray: #e9ecef;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: var(--gray-light);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* হেডার */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #1b5e20);
+            color: white;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: #ffd700;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-links a.active {
+            background: #ffd700;
+            color: var(--primary-dark);
+        }
+
+        /* চ্যাট কন্টেইনার */
+        .chat-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            background: white;
+        }
+
+        /* সাইডবার */
+        .chat-sidebar {
+            width: 300px;
+            border-right: 1px solid var(--gray);
+            background: var(--gray-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar h3 {
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            margin: 0;
+        }
+
+        .chat-search {
+            padding: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .chat-search input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--gray);
+            border-radius: 25px;
+            font-size: 14px;
+        }
+
+        .chat-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-user-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .chat-user-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .chat-user-item:hover {
+            background: var(--gray);
+        }
+
+        .chat-user-item.active {
+            background: rgba(46,125,50,0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        .chat-user-item.unread {
+            background: rgba(255,215,0,0.1);
+        }
+
+        .chat-user-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chat-user-time {
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        .chat-last-message {
+            font-size: 12px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* মেইন চ্যাট */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-to-list {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .user-info h3 {
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .online-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+            display: inline-block;
+        }
+
+        /* মেসেজ এরিয়া */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--gray-light);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+            clear: both;
+        }
+
+        .message.sent {
+            float: right;
+        }
+
+        .message.received {
+            float: left;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .message.sent .message-content {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-content {
+            background: white;
+            color: var(--text-dark);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 9px;
+            margin-top: 4px;
+            color: rgba(255,255,255,0.7);
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            color: var(--text-light);
+        }
+
+        /* ইনপুট এরিয়া */
+        .chat-input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid var(--gray);
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid var(--gray);
+            border-radius: 20px;
+            resize: none;
+            font-size: 14px;
+            font-family: inherit;
+            max-height: 80px;
+        }
+
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* টোস্ট */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+        }
+
+        .toast {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: #28a745; }
+        .toast.error { border-left-color: #dc3545; }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* মোবাইল */
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                width: 100%;
+                position: absolute;
+                left: -100%;
+                transition: left 0.3s ease;
+                z-index: 10;
+                height: 100%;
+            }
+
+            .chat-sidebar.active {
+                left: 0;
+            }
+
+            .back-to-list {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <h1>প্ল্যান্ট মার্কেট</h1>
+                </div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="index.html"><i class="fas fa-home"></i> হোম</a></li>
+                        <li><a href="seller.html"><i class="fas fa-store"></i> ড্যাশবোর্ড</a></li>
+                        <li><a href="chat.html" class="active"><i class="fas fa-comment"></i> চ্যাট</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="chat-container">
+        <!-- সাইডবার -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <h3><i class="fas fa-comments"></i> চ্যাট সমূহ</h3>
+            <div class="chat-search">
+                <input type="text" id="chatSearch" placeholder="খুঁজুন..." onkeyup="searchChats()">
+            </div>
+            <div class="chat-user-list" id="chatUserList"></div>
+        </div>
+
+        <!-- মেইন চ্যাট -->
+        <div class="chat-main">
+            <div class="chat-header">
+                <button class="back-to-list" onclick="toggleSidebar()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="user-info">
+                    <h3 id="chatWithName">চ্যাট নির্বাচন করুন</h3>
+                    <p id="chatWithStatus"><span class="online-status" id="onlineStatus"></span> অফলাইন</p>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div style="text-align: center; color: var(--text-light); padding: 40px;">
+                    <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
+                    <p>বাম পাশের তালিকা থেকে চ্যাট নির্বাচন করুন</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                <textarea id="messageInput" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
+                <button onclick="sendMessage()" class="send-btn" id="sendBtn">
+                    <i class="fas fa-paper-plane"></i> পাঠান
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
+            authDomain: "naruto-76eb1.firebaseapp.com",
+            databaseURL: "https://naruto-76eb1-default-rtdb.firebaseio.com",
+            projectId: "naruto-76eb1",
+            storageBucket: "naruto-76eb1.firebasestorage.app",
+            messagingSenderId: "321658766206",
+            appId: "1:321658766206:web:ec60429bf933551692a92f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let currentUser = null;
+        let currentChatWith = null;
+        let currentChatId = null;
+        let currentProductId = null;
+        let currentListener = null;
+
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // অথ চেক
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+
+            // URL থেকে প্যারামিটার নেওয়া
+            const params = new URLSearchParams(window.location.search);
+            const sellerId = params.get('seller');
+            const productId = params.get('product');
+            const chatUserId = params.get('user');
+
+            if (sellerId && productId) {
+                currentChatWith = sellerId;
+                currentProductId = productId;
+                currentChatId = [currentUser.uid, sellerId, productId].sort().join('_');
+                loadChat();
+            } else if (chatUserId) {
+                // চ্যাট লিস্ট থেকে আসলে
+                currentChatWith = chatUserId;
+                // productId বের করা দরকার
+                const chats = await database.ref(`users/${currentUser.uid}/chats`).once('value');
+                chats.forEach(child => {
+                    const chat = child.val();
+                    if (chat.withUserId === chatUserId) {
+                        const ids = child.key.split('_');
+                        for (let id of ids) {
+                            if (id !== currentUser.uid && id !== chatUserId) {
+                                currentProductId = id;
+                                break;
+                            }
+                        }
+                        currentChatId = child.key;
+                    }
+                });
+                if (currentChatId) loadChat();
+            }
+
+            loadUserChatList();
+        });
+
+        function loadUserChatList() {
+            database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
+                const chats = [];
+                snapshot.forEach(child => {
+                    chats.push({ id: child.key, ...child.val() });
+                });
+                chats.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+                displayChatList(chats);
+            });
+        }
+
+        function displayChatList(chats) {
+            const container = document.getElementById('chatUserList');
+            container.innerHTML = '';
+
+            if (chats.length === 0) {
+                container.innerHTML = '<p style="padding: 20px;">কোন চ্যাট নেই</p>';
+                return;
+            }
+
+            chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = `chat-user-item ${chat.unread ? 'unread' : ''} ${chat.withUserId === currentChatWith ? 'active' : ''}`;
+                item.onclick = () => {
+                    currentChatWith = chat.withUserId;
+                    currentChatId = chat.id;
+                    const ids = chat.id.split('_');
+                    for (let id of ids) {
+                        if (id !== currentUser.uid && id !== chat.withUserId) {
+                            currentProductId = id;
+                            break;
+                        }
+                    }
+                    loadChat();
+                    database.ref(`users/${currentUser.uid}/chats/${chat.id}/unread`).set(false);
+                    if (window.innerWidth <= 768) toggleSidebar();
+                };
+                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD');
+                item.innerHTML = `
+                    <div class="chat-user-name">
+                        <span>${chat.withUserName}</span>
+                        <span class="chat-user-time">${time}</span>
+                    </div>
+                    <div class="chat-last-message">${chat.lastMessage || ''}</div>
+                    ${chat.unread ? '<span class="unread-badge">১</span>' : ''}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.searchChats = function() {
+            const term = document.getElementById('chatSearch').value.toLowerCase();
+            document.querySelectorAll('#chatUserList .chat-user-item').forEach(item => {
+                const name = item.querySelector('.chat-user-name span').textContent.toLowerCase();
+                item.style.display = name.includes(term) ? 'block' : 'none';
+            });
+        };
+
+        function loadChat() {
+            if (!currentChatId) return;
+
+            if (currentListener) {
+                database.ref(`chats/${currentChatId}/messages`).off('value', currentListener);
+            }
+
+            currentListener = database.ref(`chats/${currentChatId}/messages`).orderByChild('timestamp').on('value', (snapshot) => {
+                const messages = [];
+                snapshot.forEach(child => {
+                    const msg = child.val();
+                    msg.id = child.key;
+                    messages.push(msg);
+
+                    if (msg.receiverId === currentUser.uid && !msg.read) {
+                        database.ref(`chats/${currentChatId}/messages/${child.key}/read`).set(true);
+                    }
+                });
+                displayMessages(messages);
+            });
+
+            database.ref('users/' + currentChatWith).once('value').then((snapshot) => {
+                const user = snapshot.val();
+                document.getElementById('chatWithName').textContent = user?.name || 'ইউজার';
+                const status = document.getElementById('chatWithStatus');
+                const dot = document.getElementById('onlineStatus');
+                if (user?.online) {
+                    dot.style.background = '#28a745';
+                    status.innerHTML = '<span class="online-status" style="background: #28a745;"></span> অনলাইন';
+                } else {
+                    dot.style.background = '#dc3545';
+                    const last = user?.lastSeen ? new Date(user.lastSeen).toLocaleString('bn-BD') : 'অজানা';
+                    status.innerHTML = `<span class="online-status" style="background: #dc3545;"></span> সর্বশেষ: ${last}`;
+                }
+            });
+
+            document.getElementById('chatInputArea').style.display = 'flex';
+            document.getElementById('chatMessages').innerHTML = '';
+        }
+
+        function displayMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+
+            if (messages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 30px;">কোন মেসেজ নেই</p>';
+                return;
+            }
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
+                const time = new Date(msg.timestamp).toLocaleTimeString('bn-BD');
+                div.innerHTML = `
+                    <div class="message-content">
+                        ${msg.text}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        window.sendMessage = async function() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
+
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+
+            const message = {
+                senderId: currentUser.uid,
+                receiverId: currentChatWith,
+                text,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+
+            try {
+                await database.ref(`chats/${currentChatId}/messages`).push(message);
+                await database.ref(`chats/${currentChatId}/lastMessage`).set({
+                    text, timestamp: message.timestamp, senderId: currentUser.uid
+                });
+
+                const receiver = await database.ref('users/' + currentChatWith).once('value');
+                const receiverName = receiver.val()?.name || 'ইউজার';
+                await database.ref(`users/${currentUser.uid}/chats/${currentChatId}`).set({
+                    withUserId: currentChatWith, withUserName: receiverName,
+                    lastMessage: text, lastMessageTime: message.timestamp, unread: false
+                });
+
+                const sender = await database.ref('users/' + currentUser.uid).once('value');
+                const senderName = sender.val()?.name || 'ইউজার';
+                await database.ref(`users/${currentChatWith}/chats/${currentChatId}`).set({
+                    withUserId: currentUser.uid, withUserName: senderName,
+                    lastMessage: text, lastMessageTime: message.timestamp, unread: true
+                });
+
+                input.value = '';
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+            }
+        };
+
+        // মোবাইল সাইডবার টগল
+        window.toggleSidebar = function() {
+            document.getElementById('chatSidebar').classList.toggle('active');
+        };
+
+        // এন্টার চাপলে সেন্ড
+        document.getElementById('messageInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

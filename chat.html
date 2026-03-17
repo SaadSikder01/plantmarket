@@ -34,7 +34,6 @@
             overflow: hidden;
         }
 
-        /* হেডার */
         .header {
             background: linear-gradient(135deg, var(--primary), #1b5e20);
             color: white;
@@ -96,14 +95,12 @@
             color: var(--primary-dark);
         }
 
-        /* চ্যাট কন্টেইনার */
         .chat-container {
             display: flex;
             height: calc(100vh - 70px);
             background: white;
         }
 
-        /* সাইডবার */
         .chat-sidebar {
             width: 300px;
             border-right: 1px solid var(--gray);
@@ -199,7 +196,6 @@
             font-size: 11px;
         }
 
-        /* মেইন চ্যাট */
         .chat-main {
             flex: 1;
             display: flex;
@@ -245,7 +241,6 @@
             display: inline-block;
         }
 
-        /* মেসেজ এরিয়া - মোবাইলের জন্য ফিক্স */
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -290,7 +285,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* ইমেজ মেসেজ */
         .message-image {
             max-width: 200px;
             max-height: 200px;
@@ -309,7 +303,6 @@
             color: var(--text-light);
         }
 
-        /* ইনপুট এরিয়া */
         .chat-input-area {
             padding: 15px;
             background: white;
@@ -380,7 +373,6 @@
             cursor: not-allowed;
         }
 
-        /* ইমেজ প্রিভিউ */
         .image-preview-container {
             position: fixed;
             top: 0;
@@ -408,7 +400,6 @@
             cursor: pointer;
         }
 
-        /* টোস্ট */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -443,7 +434,6 @@
             }
         }
 
-        /* মোবাইল রেসপনসিভ ফিক্স */
         @media (max-width: 768px) {
             .chat-sidebar {
                 width: 100%;
@@ -488,13 +478,11 @@
                 right: 20px;
             }
 
-            /* মেসেজ কন্টেইনার হাইট ফিক্স */
             .chat-messages {
                 height: calc(100vh - 140px);
                 padding: 15px;
             }
 
-            /* মেসেজ কন্টেন্ট সঠিকভাবে দেখানোর জন্য */
             .message-content {
                 max-width: 100%;
                 word-break: break-word;
@@ -548,7 +536,6 @@
 <body>
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ইমেজ প্রিভিউ মোডাল -->
     <div class="image-preview-container" id="imagePreviewModal" onclick="this.style.display='none'">
         <span class="close-preview">&times;</span>
         <img id="previewImage" src="" alt="Preview">
@@ -573,7 +560,6 @@
     </header>
 
     <div class="chat-container">
-        <!-- সাইডবার -->
         <div class="chat-sidebar" id="chatSidebar">
             <h3><i class="fas fa-comments"></i> চ্যাট সমূহ</h3>
             <div class="chat-search">
@@ -582,7 +568,6 @@
             <div class="chat-user-list" id="chatUserList"></div>
         </div>
 
-        <!-- মেইন চ্যাট -->
         <div class="chat-main">
             <div class="chat-header">
                 <button class="back-to-list" onclick="toggleSidebar()">
@@ -614,13 +599,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
             authDomain: "naruto-76eb1.firebaseapp.com",
@@ -655,7 +638,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // ক্লাউডিনারি ইমেজ আপলোড
         async function uploadImage(file) {
             const formData = new FormData();
             formData.append('file', file);
@@ -668,7 +650,6 @@
             return data.secure_url;
         }
 
-        // ইমেজ পাঠানো
         window.sendImage = async function() {
             const fileInput = document.getElementById('imageInput');
             const file = fileInput.files[0];
@@ -706,7 +687,6 @@
             }
         };
 
-        // অথ চেক
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'index.html';

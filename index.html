@@ -624,6 +624,12 @@
                 justify-content: center;
             }
 
+            /* চ্যাট আইকন সবসময় visible থাকবে */
+            #chatLink {
+                display: flex !important;
+                position: relative;
+            }
+
             .auth-buttons {
                 flex-direction: column;
                 width: 100%;
@@ -663,6 +669,21 @@
             .toast-container {
                 left: 20px;
                 right: 20px;
+            }
+
+            /* মোবাইলে মেসেজ ঠিকভাবে দেখানোর জন্য */
+            .chat-messages {
+                height: calc(100vh - 140px);
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .message-content {
+                word-break: break-word;
             }
         }
 

@@ -451,6 +451,86 @@
         .confirm-btn.no {
             background: var(--gray);
         }
+
+        /* মোবাইল রেসপনসিভ ফিক্স */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px 0;
+            }
+
+            .sidebar ul {
+                display: flex;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding: 0 10px;
+                gap: 10px;
+            }
+
+            .sidebar li {
+                display: inline-block;
+                padding: 8px 15px;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar li.active {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+
+            .sidebar li:hover {
+                border-left: none;
+                border-bottom-color: var(--primary);
+            }
+
+            .sidebar h3 {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .toast-container {
+                left: 20px;
+                right: 20px;
+            }
+
+            .confirm-content {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .logo h1 {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -552,7 +632,7 @@
                 </form>
             </div>
 
-            <!-- আমার পণ্য (ডিলিট অপশন সহ) -->
+            <!-- আমার পণ্য -->
             <div id="myProducts" class="content-section">
                 <h2>আমার পণ্য</h2>
                 <div id="sellerProductsGrid" class="product-grid"></div>
@@ -636,7 +716,6 @@
             try {
                 await database.ref('products/' + productToDelete).remove();
                 
-                // সেলারের টোটাল প্রোডাক্ট কাউন্ট আপডেট
                 const sellerRef = database.ref('sellers/' + currentUser.uid);
                 const snap = await sellerRef.once('value');
                 const total = (snap.val()?.totalProducts || 1) - 1;

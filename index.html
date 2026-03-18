@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -94,16 +95,8 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--white);
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .nav-menu {
+        /* ডেস্কটপ মেনু */
+        .desktop-menu {
             display: flex;
             align-items: center;
             gap: 25px;
@@ -114,7 +107,6 @@
             list-style: none;
             gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -226,6 +218,29 @@
             font-weight: 600;
             color: var(--white);
             font-size: 15px;
+        }
+
+        /* মোবাইল ডান অংশ */
+        .mobile-right {
+            display: none;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-chat-link {
+            position: relative;
+            color: white;
+            font-size: 20px;
+            display: none; /* লগইন করলে JS এ দেখাবে */
+        }
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
         }
 
         /* সার্চ সেকশন */
@@ -591,36 +606,26 @@
 
         /* মোবাইল রেসপনসিভ */
         @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .header-content {
-                position: relative;
-            }
-
-            .nav-menu {
+            .desktop-menu {
                 display: none;
-                width: 100%;
-                flex-direction: column;
-                padding: 15px 0;
-                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
                 position: absolute;
                 top: 100%;
                 left: 0;
                 right: 0;
-                z-index: 999;
+                background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                box-shadow: var(--shadow);
             }
 
-            .nav-menu.active {
+            .desktop-menu.active {
                 display: flex;
             }
 
             .nav-links {
                 flex-direction: column;
-                align-items: center;
                 width: 100%;
-                gap: 10px;
             }
 
             .nav-links a {
@@ -629,30 +634,31 @@
                 justify-content: center;
             }
 
-            /* চ্যাট আইকন সবসময় visible থাকবে - ডেস্কটপের মতো */
-            #chatLink {
-                display: flex !important;
-                position: relative;
-                order: -1; /* চ্যাট আইকন উপরে রাখার জন্য */
-            }
-
             .auth-buttons {
                 flex-direction: column;
                 width: 100%;
-                gap: 10px;
-                margin-top: 10px;
             }
 
             .btn-login, .btn-register {
                 width: 100%;
-                text-align: center;
                 justify-content: center;
             }
 
             .user-profile {
                 width: 100%;
                 justify-content: center;
-                margin-top: 10px;
+            }
+
+            .mobile-right {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .mobile-chat-link {
+                display: none; /* JS dynamically show */
             }
 
             .search-container {
@@ -707,18 +713,15 @@
                     <h1>প্ল্যান্ট মার্কেট</h1>
                 </div>
                 
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                
-                <nav class="nav-menu" id="navMenu">
+                <!-- ডেস্কটপ মেনু -->
+                <div class="desktop-menu" id="desktopMenu">
                     <ul class="nav-links">
                         <li><a href="index.html" class="active"><i class="fas fa-home"></i> হোম</a></li>
                         <li><a id="sellerLink" style="display: none;" href="seller.html"><i class="fas fa-store"></i> সেলার</a></li>
                         <li>
-                            <a id="chatLink" href="chat.html">
+                            <a id="chatLinkDesktop" href="chat.html" style="display: none;">
                                 <i class="fas fa-comment"></i> চ্যাট
-                                <span id="chatNotification" class="notification-badge" style="display: none;">0</span>
+                                <span id="chatNotificationDesktop" class="notification-badge" style="display: none;">0</span>
                             </a>
                         </li>
                     </ul>
@@ -733,7 +736,18 @@
                         <span id="userNameDisplay"></span>
                         <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
-                </nav>
+                </div>
+
+                <!-- মোবাইল ডান অংশ -->
+                <div class="mobile-right">
+                    <a id="chatLinkMobile" class="mobile-chat-link" href="chat.html" style="display: none;">
+                        <i class="fas fa-comment"></i>
+                        <span id="chatNotificationMobile" class="notification-badge" style="display: none;">0</span>
+                    </a>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -841,7 +855,8 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function checkNotifications() {
+        // নোটিফিকেশন আপডেট (দুটি ব্যাজের জন্যই)
+        function updateNotifications() {
             if (!currentUser) return;
             
             database.ref(`users/${currentUser.uid}/chats`).on('value', (snapshot) => {
@@ -850,18 +865,27 @@
                     if (child.val().unread) totalUnread++;
                 });
                 
-                const badge = document.getElementById('chatNotification');
-                if (badge) {
-                    if (totalUnread > 0) {
-                        badge.style.display = 'flex';
-                        badge.textContent = totalUnread > 9 ? '9+' : totalUnread;
-                    } else {
-                        badge.style.display = 'none';
+                const badgeDesktop = document.getElementById('chatNotificationDesktop');
+                const badgeMobile = document.getElementById('chatNotificationMobile');
+                
+                if (totalUnread > 0) {
+                    const displayText = totalUnread > 9 ? '9+' : totalUnread;
+                    if (badgeDesktop) {
+                        badgeDesktop.style.display = 'flex';
+                        badgeDesktop.textContent = displayText;
                     }
+                    if (badgeMobile) {
+                        badgeMobile.style.display = 'flex';
+                        badgeMobile.textContent = displayText;
+                    }
+                } else {
+                    if (badgeDesktop) badgeDesktop.style.display = 'none';
+                    if (badgeMobile) badgeMobile.style.display = 'none';
                 }
             });
         }
 
+        // অথ স্টেট
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
@@ -878,16 +902,21 @@
                     await database.ref('users/' + user.uid).set(currentUserData);
                 }
 
+                // UI আপডেট
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userProfile').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = currentUserData.name;
 
+                // সেলার লিংক
                 if (currentUserData.userType === 'seller') {
                     document.getElementById('sellerLink').style.display = 'block';
                 }
 
-                // চ্যাট আইকন সবসময় visible থাকবে
-                document.getElementById('chatLink').style.display = 'flex';
+                // চ্যাট লিংক দেখানো (ডেস্কটপ ও মোবাইল)
+                const chatDesktop = document.getElementById('chatLinkDesktop');
+                const chatMobile = document.getElementById('chatLinkMobile');
+                if (chatDesktop) chatDesktop.style.display = 'flex';
+                if (chatMobile) chatMobile.style.display = 'flex';
 
                 await database.ref('users/' + user.uid).update({
                     online: true,
@@ -895,7 +924,7 @@
                 });
 
                 loadProducts();
-                checkNotifications();
+                updateNotifications();
             } else {
                 currentUser = null;
                 currentUserData = null;
@@ -904,16 +933,22 @@
                 document.getElementById('userProfile').style.display = 'none';
                 document.getElementById('sellerLink').style.display = 'none';
                 
-                // চ্যাট আইকন সবসময় visible থাকবে (লগইন না করলেও)
-                document.getElementById('chatLink').style.display = 'flex';
+                // চ্যাট লিংক লুকানো
+                const chatDesktop = document.getElementById('chatLinkDesktop');
+                const chatMobile = document.getElementById('chatLinkMobile');
+                if (chatDesktop) chatDesktop.style.display = 'none';
+                if (chatMobile) chatMobile.style.display = 'none';
                 
-                const badge = document.getElementById('chatNotification');
-                if (badge) badge.style.display = 'none';
+                const badgeDesktop = document.getElementById('chatNotificationDesktop');
+                const badgeMobile = document.getElementById('chatNotificationMobile');
+                if (badgeDesktop) badgeDesktop.style.display = 'none';
+                if (badgeMobile) badgeMobile.style.display = 'none';
                 
                 loadProducts();
             }
         });
 
+        // প্রোডাক্ট লোড
         function loadProducts() {
             database.ref('products').on('value', (snapshot) => {
                 const products = [];
@@ -969,6 +1004,7 @@
             });
         }
 
+        // ফিল্টার
         window.filterProducts = function(category) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
@@ -1002,6 +1038,7 @@
             });
         };
 
+        // চ্যাট স্টার্ট
         window.startChat = function(sellerId, productId) {
             if (!currentUser) {
                 showToast('warning', 'চ্যাট করতে লগইন করুন');
@@ -1015,6 +1052,7 @@
             window.location.href = `chat.html?seller=${sellerId}&product=${productId}`;
         };
 
+        // মোডাল
         window.showLoginModal = function() {
             document.getElementById('loginModal').style.display = 'block';
         };
@@ -1082,8 +1120,9 @@
             showToast('info', 'লগআউট');
         };
 
+        // মোবাইল মেনু টগল
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-            document.getElementById('navMenu').classList.toggle('active');
+            document.getElementById('desktopMenu').classList.toggle('active');
         });
 
         window.onclick = function(event) {
@@ -1098,3 +1137,4 @@
     </script>
 </body>
 </html>
+```

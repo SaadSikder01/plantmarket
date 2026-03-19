@@ -499,11 +499,6 @@
                 top: 70px;
                 bottom: 0;
                 z-index: 10;
-                transition: left 0.3s ease;
-            }
-
-            .chat-sidebar.hidden {
-                left: -100%;
             }
 
             .chat-main {
@@ -573,28 +568,28 @@
             <div class="chat-list" id="chatList"></div>
         </div>
 
-        <!-- চ্যাট মেইন এরিয়া - প্রথম চ্যাট অটো সিলেক্ট হবে -->
+        <!-- চ্যাট মেইন এরিয়া - শুরুতে খালি থাকবে -->
         <div class="chat-main">
             <div class="chat-header">
                 <button class="back-to-list" id="backToList" onclick="toggleSidebar()" style="display: none;">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="user-avatar" id="chatAvatar">U</div>
+                <div class="user-avatar" id="chatAvatar">?</div>
                 <div class="user-info">
-                    <h3 id="chatWithName">লোড হচ্ছে...</h3>
-                    <p id="chatWithStatus"><span class="online-status" id="onlineStatus" style="background:#dc3545;"></span> অফলাইন</p>
+                    <h3 id="chatWithName">চ্যাট নির্বাচন করুন</h3>
+                    <p id="chatWithStatus"><span class="online-status" id="onlineStatus" style="background:#dc3545;"></span></p>
                 </div>
             </div>
 
-            <!-- মেসেজ এরিয়া -->
+            <!-- মেসেজ এরিয়া - শুরুতে খালি থাকবে -->
             <div class="messages-area" id="messagesArea">
                 <div style="text-align: center; color: var(--text-light); padding: 40px;">
                     <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
-                    <p>চ্যাট লোড হচ্ছে...</p>
+                    <p>বাম পাশের তালিকা থেকে একটি চ্যাট নির্বাচন করুন</p>
                 </div>
             </div>
 
-            <!-- ইনপুট এরিয়া -->
+            <!-- ইনপুট এরিয়া - শুরুতে লুকানো থাকবে -->
             <div class="input-area" id="inputArea" style="display: none;">
                 <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
                 <button class="image-upload-btn" onclick="document.getElementById('imageInput').click()">
@@ -707,6 +702,7 @@
             }
             currentUser = user;
 
+            // ইউআরএল থেকে প্যারামিটার চেক করা (যদি সরাসরি চ্যাট লিংকে ক্লিক করা হয়)
             const params = new URLSearchParams(window.location.search);
             const sellerId = params.get('seller');
             const productId = params.get('product');
@@ -716,6 +712,7 @@
                 currentChatWith = sellerId;
                 currentProductId = productId;
                 currentChatId = [currentUser.uid, sellerId, productId].sort().join('_');
+                loadChat();
             } else if (chatUserId) {
                 currentChatWith = chatUserId;
                 const chats = await database.ref(`users/${currentUser.uid}/chats`).once('value');
@@ -732,13 +729,13 @@
                         currentChatId = child.key;
                     }
                 });
+                if (currentChatId) loadChat();
             }
 
             loadUserChatList();
 
-            // মোবাইলে সাইডবার টগল
+            // মোবাইলে ব্যাক বাটন দেখানো
             if (window.innerWidth <= 768) {
-                document.getElementById('chatSidebar').classList.add('hidden');
                 document.getElementById('backToList').style.display = 'block';
             }
         });
@@ -774,30 +771,6 @@
                 });
                 
                 displayChatList(chats);
-                
-                // **অটোমেটিক প্রথম চ্যাট সিলেক্ট করুন**
-                if (chats.length > 0 && !currentChatId) {
-                    const firstChat = chats[0];
-                    currentChatWith = firstChat.withUserId;
-                    currentChatId = firstChat.id;
-                    const ids = firstChat.id.split('_');
-                    for (let id of ids) {
-                        if (id !== currentUser.uid && id !== firstChat.withUserId) {
-                            currentProductId = id;
-                            break;
-                        }
-                    }
-                    loadChat();
-                } else if (chats.length === 0) {
-                    // কোনো চ্যাট না থাকলে মেসেজ দেখান
-                    document.getElementById('messagesArea').innerHTML = `
-                        <div style="text-align: center; color: var(--text-light); padding: 40px;">
-                            <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
-                            <p>কোন চ্যাট নেই। একটি পণ্য থেকে চ্যাট শুরু করুন।</p>
-                        </div>
-                    `;
-                    document.getElementById('inputArea').style.display = 'none';
-                }
             });
         }
 
@@ -806,7 +779,7 @@
             container.innerHTML = '';
 
             if (chats.length === 0) {
-                container.innerHTML = '<p style="padding:20px; text-align:center;">কোন চ্যাট নেই</p>';
+                container.innerHTML = '<p style="padding:20px; text-align:center;">কোন চ্যাট নেই। একটি পণ্য থেকে চ্যাট শুরু করুন।</p>';
                 return;
             }
 
@@ -814,6 +787,11 @@
                 const item = document.createElement('div');
                 item.className = `chat-item ${chat.unread ? 'unread' : ''} ${chat.withUserId === currentChatWith ? 'active' : ''}`;
                 item.onclick = () => {
+                    // আগের চ্যাট লিসেনার বন্ধ করা
+                    if (currentListener) {
+                        database.ref(`chats/${currentChatId}/messages`).off('value', currentListener);
+                    }
+
                     currentChatWith = chat.withUserId;
                     currentChatId = chat.id;
                     const ids = chat.id.split('_');
@@ -825,8 +803,10 @@
                     }
                     loadChat();
                     database.ref(`users/${currentUser.uid}/chats/${chat.id}/unread`).set(false);
+                    
+                    // মোবাইলে সাইডবার হাইড করা
                     if (window.innerWidth <= 768) {
-                        document.getElementById('chatSidebar').classList.add('hidden');
+                        document.getElementById('chatSidebar').style.display = 'none';
                     }
                 };
 
@@ -897,6 +877,11 @@
             });
 
             document.getElementById('inputArea').style.display = 'flex';
+            
+            // মোবাইলে সাইডবার হাইড করা
+            if (window.innerWidth <= 768) {
+                document.getElementById('chatSidebar').style.display = 'none';
+            }
         }
 
         function displayMessages(messages) {
@@ -998,7 +983,11 @@
 
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('chatSidebar');
-            sidebar.classList.toggle('hidden');
+            if (sidebar.style.display === 'none') {
+                sidebar.style.display = 'flex';
+            } else {
+                sidebar.style.display = 'none';
+            }
         };
 
         document.getElementById('messageInput')?.addEventListener('keypress', function(e) {
@@ -1013,7 +1002,7 @@
                 document.getElementById('backToList').style.display = 'block';
             } else {
                 document.getElementById('backToList').style.display = 'none';
-                document.getElementById('chatSidebar').classList.remove('hidden');
+                document.getElementById('chatSidebar').style.display = 'flex';
             }
         });
     </script>

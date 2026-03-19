@@ -93,7 +93,7 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* চ্যাট কন্টেইনার - মেসেঞ্জার স্টাইল */
+        /* চ্যাট কন্টেইনার - ফেসবুক মেসেঞ্জার স্টাইল */
         .chat-container {
             display: flex;
             height: calc(100vh - 70px);
@@ -564,7 +564,7 @@
     </header>
 
     <div class="chat-container">
-        <!-- চ্যাট লিস্ট সাইডবার -->
+        <!-- চ্যাট লিস্ট সাইডবার - সরাসরি দেখা যাবে -->
         <div class="chat-sidebar" id="chatSidebar">
             <h3><i class="fas fa-comments"></i> চ্যাট সমূহ</h3>
             <div class="chat-search">
@@ -573,7 +573,7 @@
             <div class="chat-list" id="chatList"></div>
         </div>
 
-        <!-- চ্যাট মেইন এরিয়া -->
+        <!-- চ্যাট মেইন এরিয়া - প্রথম চ্যাট অটো সিলেক্ট হবে -->
         <div class="chat-main">
             <div class="chat-header">
                 <button class="back-to-list" id="backToList" onclick="toggleSidebar()" style="display: none;">
@@ -581,7 +581,7 @@
                 </button>
                 <div class="user-avatar" id="chatAvatar">U</div>
                 <div class="user-info">
-                    <h3 id="chatWithName">চ্যাট নির্বাচন করুন</h3>
+                    <h3 id="chatWithName">লোড হচ্ছে...</h3>
                     <p id="chatWithStatus"><span class="online-status" id="onlineStatus" style="background:#dc3545;"></span> অফলাইন</p>
                 </div>
             </div>
@@ -590,7 +590,7 @@
             <div class="messages-area" id="messagesArea">
                 <div style="text-align: center; color: var(--text-light); padding: 40px;">
                     <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
-                    <p>বাম পাশের তালিকা থেকে একটি চ্যাট নির্বাচন করুন</p>
+                    <p>চ্যাট লোড হচ্ছে...</p>
                 </div>
             </div>
 
@@ -636,7 +636,7 @@
         let currentChatId = null;
         let currentProductId = null;
         let currentListener = null;
-        let lastMessageTime = null; // নতুন মেসেজ শনাক্ত করতে
+        let lastMessageTime = null;
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -716,7 +716,6 @@
                 currentChatWith = sellerId;
                 currentProductId = productId;
                 currentChatId = [currentUser.uid, sellerId, productId].sort().join('_');
-                loadChat();
             } else if (chatUserId) {
                 currentChatWith = chatUserId;
                 const chats = await database.ref(`users/${currentUser.uid}/chats`).once('value');
@@ -733,7 +732,6 @@
                         currentChatId = child.key;
                     }
                 });
-                if (currentChatId) loadChat();
             }
 
             loadUserChatList();
@@ -767,13 +765,39 @@
                 snapshot.forEach(child => {
                     chats.push({ id: child.key, ...child.val() });
                 });
+                
                 // নতুন মেসেজ যাদের আছে তারা উপরে থাকবে
                 chats.sort((a, b) => {
                     if (a.unread && !b.unread) return -1;
                     if (!a.unread && b.unread) return 1;
                     return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
                 });
+                
                 displayChatList(chats);
+                
+                // **অটোমেটিক প্রথম চ্যাট সিলেক্ট করুন**
+                if (chats.length > 0 && !currentChatId) {
+                    const firstChat = chats[0];
+                    currentChatWith = firstChat.withUserId;
+                    currentChatId = firstChat.id;
+                    const ids = firstChat.id.split('_');
+                    for (let id of ids) {
+                        if (id !== currentUser.uid && id !== firstChat.withUserId) {
+                            currentProductId = id;
+                            break;
+                        }
+                    }
+                    loadChat();
+                } else if (chats.length === 0) {
+                    // কোনো চ্যাট না থাকলে মেসেজ দেখান
+                    document.getElementById('messagesArea').innerHTML = `
+                        <div style="text-align: center; color: var(--text-light); padding: 40px;">
+                            <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
+                            <p>কোন চ্যাট নেই। একটি পণ্য থেকে চ্যাট শুরু করুন।</p>
+                        </div>
+                    `;
+                    document.getElementById('inputArea').style.display = 'none';
+                }
             });
         }
 
@@ -837,7 +861,6 @@
                 database.ref(`chats/${currentChatId}/messages`).off('value', currentListener);
             }
 
-            // শেষ মেসেজের সময় রিসেট
             lastMessageTime = null;
 
             currentListener = database.ref(`chats/${currentChatId}/messages`).orderByChild('timestamp').on('value', (snapshot) => {
@@ -874,7 +897,6 @@
             });
 
             document.getElementById('inputArea').style.display = 'flex';
-            document.getElementById('messagesArea').innerHTML = '';
         }
 
         function displayMessages(messages) {
@@ -888,7 +910,6 @@
 
             let newMessageIndex = -1;
             if (lastMessageTime) {
-                // নতুন মেসেজ কোথায় শুরু হয়েছে তা খুঁজে বের করা
                 for (let i = 0; i < messages.length; i++) {
                     if (new Date(messages[i].timestamp) > new Date(lastMessageTime)) {
                         newMessageIndex = i;
@@ -898,7 +919,6 @@
             }
 
             messages.forEach((msg, index) => {
-                // নতুন মেসেজ ইন্ডিকেটর
                 if (newMessageIndex === index) {
                     const indicator = document.createElement('div');
                     indicator.className = 'new-message-indicator';
@@ -929,7 +949,6 @@
                 container.appendChild(div);
             });
 
-            // শেষ মেসেজের সময় আপডেট
             if (messages.length > 0) {
                 lastMessageTime = messages[messages.length - 1].timestamp;
             }
@@ -989,7 +1008,6 @@
             }
         });
 
-        // মোবাইল রেসপনসিভ: ব্যাক বাটন দেখানো/লুকানো
         window.addEventListener('resize', function() {
             if (window.innerWidth <= 768) {
                 document.getElementById('backToList').style.display = 'block';

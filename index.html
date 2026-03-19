@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>প্ল্যান্ট মার্কেট - হোম</title>
     
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -51,7 +48,6 @@
             padding: 0 20px;
         }
 
-        /* হেডার */
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: var(--white);
@@ -66,7 +62,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .logo {
@@ -94,7 +89,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* ডেস্কটপ মেনু */
         .desktop-menu {
             display: flex;
             align-items: center;
@@ -116,7 +110,6 @@
             padding: 8px 15px;
             border-radius: 25px;
             transition: var(--transition);
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -134,7 +127,6 @@
             font-weight: 600;
         }
 
-        /* নোটিফিকেশন ব্যাজ */
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -219,7 +211,6 @@
             font-size: 15px;
         }
 
-        /* মোবাইল ডান অংশ */
         .mobile-right {
             display: none;
             align-items: center;
@@ -230,7 +221,7 @@
             position: relative;
             color: white;
             font-size: 20px;
-            display: none; /* লগইন করলে JS এ দেখাবে */
+            display: none;
         }
 
         .mobile-menu-btn {
@@ -242,7 +233,6 @@
             display: none;
         }
 
-        /* সার্চ সেকশন */
         .search-section {
             background: var(--white);
             padding: 20px 0;
@@ -290,7 +280,6 @@
             background: var(--primary-dark);
         }
 
-        /* ফিল্টার সেকশন */
         .filter-section {
             background: var(--white);
             padding: 15px 0;
@@ -328,7 +317,6 @@
             color: var(--white);
         }
 
-        /* প্রোডাক্ট গ্রিড */
         .products {
             padding: 30px 0;
             background: var(--gray-light);
@@ -467,7 +455,6 @@
             background: #128C7E;
         }
 
-        /* মোডাল */
         .modal {
             display: none;
             position: fixed;
@@ -558,7 +545,6 @@
             transform: translateY(-2px);
         }
 
-        /* টোস্ট */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -603,7 +589,6 @@
             }
         }
 
-        /* মোবাইল রেসপনসিভ */
         @media (max-width: 768px) {
             .desktop-menu {
                 display: none;
@@ -656,10 +641,6 @@
                 display: block;
             }
 
-            .mobile-chat-link {
-                display: none; /* JS dynamically show */
-            }
-
             .search-container {
                 flex-direction: column;
             }
@@ -684,21 +665,6 @@
                 right: 20px;
             }
         }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 20px;
-            }
-
-            .filter-btn {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-
-            .product-card {
-                margin: 0 5px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -712,7 +678,6 @@
                     <h1>প্ল্যান্ট মার্কেট</h1>
                 </div>
                 
-                <!-- ডেস্কটপ মেনু -->
                 <div class="desktop-menu" id="desktopMenu">
                     <ul class="nav-links">
                         <li><a href="index.html" class="active"><i class="fas fa-home"></i> হোম</a></li>
@@ -737,7 +702,6 @@
                     </div>
                 </div>
 
-                <!-- মোবাইল ডান অংশ -->
                 <div class="mobile-right">
                     <a id="chatLinkMobile" class="mobile-chat-link" href="chat.html" style="display: none;">
                         <i class="fas fa-comment"></i>
@@ -778,7 +742,6 @@
         </section>
     </div>
 
-    <!-- লগইন মোডাল -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('loginModal')">&times;</span>
@@ -794,7 +757,6 @@
         </div>
     </div>
 
-    <!-- রেজিস্টার মোডাল -->
     <div id="registerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('registerModal')">&times;</span>
@@ -813,13 +775,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
             authDomain: "naruto-76eb1.firebaseapp.com",
@@ -854,7 +814,6 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        // নোটিফিকেশন আপডেট (দুটি ব্যাজের জন্যই)
         function updateNotifications() {
             if (!currentUser) return;
             
@@ -884,7 +843,6 @@
             });
         }
 
-        // অথ স্টেট
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
@@ -901,17 +859,16 @@
                     await database.ref('users/' + user.uid).set(currentUserData);
                 }
 
-                // UI আপডেট
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userProfile').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = currentUserData.name;
 
-                // সেলার লিংক
+                // সেলার লিংক শুধু সেলারদের জন্য
                 if (currentUserData.userType === 'seller') {
                     document.getElementById('sellerLink').style.display = 'block';
                 }
 
-                // চ্যাট লিংক দেখানো (ডেস্কটপ ও মোবাইল)
+                // চ্যাট লিংক সব ইউজারের জন্য (ক্রেতা ও সেলার উভয়ের জন্যই থাকবে)
                 const chatDesktop = document.getElementById('chatLinkDesktop');
                 const chatMobile = document.getElementById('chatLinkMobile');
                 if (chatDesktop) chatDesktop.style.display = 'flex';
@@ -932,7 +889,6 @@
                 document.getElementById('userProfile').style.display = 'none';
                 document.getElementById('sellerLink').style.display = 'none';
                 
-                // চ্যাট লিংক লুকানো
                 const chatDesktop = document.getElementById('chatLinkDesktop');
                 const chatMobile = document.getElementById('chatLinkMobile');
                 if (chatDesktop) chatDesktop.style.display = 'none';
@@ -947,7 +903,6 @@
             }
         });
 
-        // প্রোডাক্ট লোড
         function loadProducts() {
             database.ref('products').on('value', (snapshot) => {
                 const products = [];
@@ -1003,7 +958,6 @@
             });
         }
 
-        // ফিল্টার
         window.filterProducts = function(category) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
@@ -1037,7 +991,6 @@
             });
         };
 
-        // চ্যাট স্টার্ট
         window.startChat = function(sellerId, productId) {
             if (!currentUser) {
                 showToast('warning', 'চ্যাট করতে লগইন করুন');
@@ -1051,7 +1004,6 @@
             window.location.href = `chat.html?seller=${sellerId}&product=${productId}`;
         };
 
-        // মোডাল
         window.showLoginModal = function() {
             document.getElementById('loginModal').style.display = 'block';
         };
@@ -1119,7 +1071,6 @@
             showToast('info', 'লগআউট');
         };
 
-        // মোবাইল মেনু টগল
         document.getElementById('mobileMenuBtn').addEventListener('click', function() {
             document.getElementById('desktopMenu').classList.toggle('active');
         });

@@ -18,24 +18,29 @@
         :root {
             --primary: #2e7d32;
             --primary-dark: #1b5e20;
+            --primary-light: #4caf50;
+            --accent: #ffd700;
             --text-dark: #2c3e50;
             --text-light: #7f8c8d;
             --white: #ffffff;
             --gray-light: #f8f9fa;
             --gray: #e9ecef;
+            --danger: #dc3545;
+            --success: #28a745;
             --shadow: 0 10px 30px rgba(0,0,0,0.1);
             --transition: all 0.3s ease;
         }
 
         body {
             font-family: 'Hind Siliguri', sans-serif;
-            background: var(--gray-light);
+            background: var(--white);
             height: 100vh;
             overflow: hidden;
         }
 
+        /* হেডার */
         .header {
-            background: linear-gradient(135deg, var(--primary), #1b5e20);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             padding: 12px 0;
             position: sticky;
@@ -54,7 +59,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
 
         .logo {
@@ -65,7 +69,7 @@
 
         .logo i {
             font-size: 28px;
-            color: #ffd700;
+            color: var(--accent);
         }
 
         .logo h1 {
@@ -73,61 +77,57 @@
             color: white;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
+        .back-home {
             color: white;
+            font-size: 20px;
             text-decoration: none;
             padding: 8px 15px;
             border-radius: 25px;
-            transition: var(--transition);
-        }
-
-        .nav-links a:hover {
             background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .nav-links a.active {
-            background: #ffd700;
-            color: var(--primary-dark);
+        .back-home:hover {
+            background: rgba(255,255,255,0.2);
         }
 
+        /* চ্যাট কন্টেইনার - মেসেঞ্জার স্টাইল */
         .chat-container {
             display: flex;
             height: calc(100vh - 70px);
-            background: white;
+            background: var(--white);
         }
 
+        /* চ্যাট লিস্ট সাইডবার */
         .chat-sidebar {
-            width: 300px;
+            width: 350px;
             border-right: 1px solid var(--gray);
             background: var(--gray-light);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .chat-sidebar h3 {
-            padding: 15px;
+            padding: 20px;
             background: var(--primary);
             color: white;
             margin: 0;
+            font-size: 18px;
         }
 
         .chat-search {
-            padding: 12px;
+            padding: 15px;
             border-bottom: 1px solid var(--gray);
         }
 
         .chat-search input {
             width: 100%;
-            padding: 10px;
+            padding: 12px 15px;
             border: 2px solid var(--gray);
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 14px;
         }
 
@@ -136,98 +136,127 @@
             border-color: var(--primary);
         }
 
-        .chat-user-list {
+        .chat-list {
             flex: 1;
             overflow-y: auto;
         }
 
-        .chat-user-item {
-            padding: 12px 15px;
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
             border-bottom: 1px solid var(--gray);
             cursor: pointer;
             transition: var(--transition);
             position: relative;
         }
 
-        .chat-user-item:hover {
+        .chat-item:hover {
             background: var(--gray);
         }
 
-        .chat-user-item.active {
+        .chat-item.active {
             background: rgba(46,125,50,0.1);
             border-left: 3px solid var(--primary);
         }
 
-        .chat-user-item.unread {
+        .chat-item.unread {
             background: rgba(255,215,0,0.1);
         }
 
-        .chat-user-name {
-            font-weight: 600;
-            margin-bottom: 3px;
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .chat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
             display: flex;
             justify-content: space-between;
         }
 
-        .chat-user-time {
-            font-size: 10px;
+        .chat-info .last-time {
+            font-size: 11px;
             color: var(--text-light);
+            font-weight: normal;
         }
 
-        .chat-last-message {
-            font-size: 12px;
+        .chat-info .last-message {
+            font-size: 13px;
             color: var(--text-light);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 25px;
         }
 
-        .unread-badge {
+        .unread-count {
             position: absolute;
             right: 15px;
-            top: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             background: var(--primary);
             color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 0 5px;
         }
 
+        /* চ্যাট মেইন এরিয়া */
         .chat-main {
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: var(--white);
         }
 
         .chat-header {
-            padding: 15px 20px;
-            background: white;
+            padding: 15px 25px;
+            background: var(--white);
             border-bottom: 1px solid var(--gray);
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-        .back-to-list {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--primary);
+        .chat-header .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
 
-        .user-info h3 {
+        .chat-header .user-info h3 {
             font-size: 16px;
             margin-bottom: 3px;
         }
 
-        .user-info p {
+        .chat-header .user-info p {
             font-size: 12px;
             color: var(--text-light);
             display: flex;
@@ -239,39 +268,47 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #28a745;
+            background: var(--success);
             display: inline-block;
         }
 
-        .chat-messages {
+        /* মেসেজ এরিয়া */
+        .messages-area {
             flex: 1;
-            padding: 20px;
+            padding: 25px;
             overflow-y: auto;
             background: var(--gray-light);
-            height: 100%;
-            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .message {
-            margin-bottom: 15px;
             max-width: 70%;
             clear: both;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.sent {
-            float: right;
+            align-self: flex-end;
         }
 
         .message.received {
-            float: left;
+            align-self: flex-start;
         }
 
         .message-content {
-            padding: 10px 15px;
-            border-radius: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
             position: relative;
             word-wrap: break-word;
             font-size: 14px;
+            max-width: 100%;
         }
 
         .message.sent .message-content {
@@ -284,7 +321,7 @@
             background: white;
             color: var(--text-dark);
             border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .message-image {
@@ -295,7 +332,7 @@
         }
 
         .message-time {
-            font-size: 9px;
+            font-size: 10px;
             margin-top: 4px;
             color: rgba(255,255,255,0.7);
             text-align: right;
@@ -305,27 +342,47 @@
             color: var(--text-light);
         }
 
-        .chat-input-area {
-            padding: 15px;
+        /* নতুন মেসেজ ইন্ডিকেটর */
+        .new-message-indicator {
+            text-align: center;
+            margin: 10px 0;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 12px;
+            background: rgba(255,215,0,0.2);
+            padding: 5px;
+            border-radius: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* ইনপুট এরিয়া */
+        .input-area {
+            padding: 20px;
             background: white;
             border-top: 1px solid var(--gray);
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: flex-end;
         }
 
-        .chat-input-area textarea {
+        .input-area textarea {
             flex: 1;
-            padding: 10px 12px;
+            padding: 12px 15px;
             border: 2px solid var(--gray);
-            border-radius: 20px;
+            border-radius: 25px;
             resize: none;
             font-size: 14px;
             font-family: inherit;
-            max-height: 80px;
+            max-height: 100px;
         }
 
-        .chat-input-area textarea:focus {
+        .input-area textarea:focus {
             outline: none;
             border-color: var(--primary);
         }
@@ -334,13 +391,14 @@
             background: var(--primary);
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
             transition: var(--transition);
         }
 
@@ -353,20 +411,20 @@
         }
 
         .send-btn {
-            padding: 10px 20px;
+            padding: 12px 25px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            transition: var(--transition);
         }
 
-        .send-btn:hover:not(:disabled) {
+        .send-btn:hover {
             background: var(--primary-dark);
         }
 
@@ -375,7 +433,8 @@
             cursor: not-allowed;
         }
 
-        .image-preview-container {
+        /* ইমেজ প্রিভিউ মোডাল */
+        .image-preview-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -388,7 +447,7 @@
             z-index: 5000;
         }
 
-        .image-preview-container img {
+        .image-preview-modal img {
             max-width: 90%;
             max-height: 90%;
         }
@@ -402,6 +461,7 @@
             cursor: pointer;
         }
 
+        /* টোস্ট */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -422,110 +482,62 @@
             border-left: 4px solid;
         }
 
-        .toast.success { border-left-color: #28a745; }
-        .toast.error { border-left-color: #dc3545; }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
+        /* মোবাইল রেসপনসিভ */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .nav-links {
-                justify-content: center;
-            }
-
             .chat-sidebar {
                 width: 100%;
                 position: absolute;
-                left: -100%;
-                transition: left 0.3s ease;
+                left: 0;
+                top: 70px;
+                bottom: 0;
                 z-index: 10;
-                height: 100%;
+                transition: left 0.3s ease;
             }
 
-            .chat-sidebar.active {
-                left: 0;
+            .chat-sidebar.hidden {
+                left: -100%;
+            }
+
+            .chat-main {
+                width: 100%;
             }
 
             .back-to-list {
                 display: block;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+                color: var(--primary);
+                margin-right: 10px;
+            }
+
+            .message {
+                max-width: 85%;
             }
 
             .message-image {
                 max-width: 150px;
             }
 
-            .message {
-                max-width: 85%;
-                margin-bottom: 12px;
-            }
-
-            .chat-header {
-                padding: 10px 15px;
-            }
-
-            .user-info h3 {
-                font-size: 14px;
-            }
-
-            .user-info p {
-                font-size: 11px;
-            }
-
-            .toast-container {
-                left: 20px;
-                right: 20px;
-            }
-
-            .chat-messages {
-                height: calc(100vh - 140px);
+            .input-area {
                 padding: 15px;
             }
 
-            .message-content {
-                max-width: 100%;
-                word-break: break-word;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo h1 {
-                font-size: 20px;
-            }
-
-            .chat-input-area {
-                flex-wrap: wrap;
-                padding: 10px;
-            }
-
-            .chat-input-area textarea {
-                width: 100%;
-                order: 1;
-                margin-bottom: 5px;
-            }
-
-            .image-upload-btn {
-                order: 2;
+            .send-btn span {
+                display: none;
             }
 
             .send-btn {
-                order: 3;
-            }
-
-            .message {
-                max-width: 90%;
+                padding: 12px;
             }
         }
     </style>
@@ -533,7 +545,8 @@
 <body>
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="image-preview-container" id="imagePreviewModal" onclick="this.style.display='none'">
+    <!-- ইমেজ প্রিভিউ মোডাল -->
+    <div class="image-preview-modal" id="imagePreviewModal" onclick="this.style.display='none'">
         <span class="close-preview">&times;</span>
         <img id="previewImage" src="" alt="Preview">
     </div>
@@ -545,57 +558,57 @@
                     <i class="fas fa-leaf"></i>
                     <h1>প্ল্যান্ট মার্কেট</h1>
                 </div>
-                <nav>
-                    <ul class="nav-links">
-                        <li><a href="index.html"><i class="fas fa-home"></i> হোম</a></li>
-                        <li><a href="seller.html"><i class="fas fa-store"></i> ড্যাশবোর্ড</a></li>
-                        <li><a href="chat.html" class="active"><i class="fas fa-comment"></i> চ্যাট</a></li>
-                    </ul>
-                </nav>
+                <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> হোম</a>
             </div>
         </div>
     </header>
 
     <div class="chat-container">
+        <!-- চ্যাট লিস্ট সাইডবার -->
         <div class="chat-sidebar" id="chatSidebar">
             <h3><i class="fas fa-comments"></i> চ্যাট সমূহ</h3>
             <div class="chat-search">
                 <input type="text" id="chatSearch" placeholder="খুঁজুন..." onkeyup="searchChats()">
             </div>
-            <div class="chat-user-list" id="chatUserList"></div>
+            <div class="chat-list" id="chatList"></div>
         </div>
 
+        <!-- চ্যাট মেইন এরিয়া -->
         <div class="chat-main">
             <div class="chat-header">
-                <button class="back-to-list" onclick="toggleSidebar()">
-                    <i class="fas fa-arrow-left"></i>
+                <button class="back-to-list" id="backToList" onclick="toggleSidebar()" style="display: none;">
+                    <i class="fas fa-bars"></i>
                 </button>
+                <div class="user-avatar" id="chatAvatar">U</div>
                 <div class="user-info">
                     <h3 id="chatWithName">চ্যাট নির্বাচন করুন</h3>
-                    <p id="chatWithStatus"><span class="online-status" id="onlineStatus"></span> অফলাইন</p>
+                    <p id="chatWithStatus"><span class="online-status" id="onlineStatus" style="background:#dc3545;"></span> অফলাইন</p>
                 </div>
             </div>
 
-            <div class="chat-messages" id="chatMessages">
+            <!-- মেসেজ এরিয়া -->
+            <div class="messages-area" id="messagesArea">
                 <div style="text-align: center; color: var(--text-light); padding: 40px;">
                     <i class="fas fa-comment-dots" style="font-size: 40px;"></i>
-                    <p>বাম পাশের তালিকা থেকে চ্যাট নির্বাচন করুন</p>
+                    <p>বাম পাশের তালিকা থেকে একটি চ্যাট নির্বাচন করুন</p>
                 </div>
             </div>
 
-            <div class="chat-input-area" id="chatInputArea" style="display: none;">
+            <!-- ইনপুট এরিয়া -->
+            <div class="input-area" id="inputArea" style="display: none;">
                 <input type="file" id="imageInput" accept="image/*" onchange="sendImage()">
                 <button class="image-upload-btn" onclick="document.getElementById('imageInput').click()">
                     <i class="fas fa-image"></i>
                 </button>
                 <textarea id="messageInput" placeholder="মেসেজ লিখুন..." rows="1"></textarea>
                 <button onclick="sendMessage()" class="send-btn" id="sendBtn">
-                    <i class="fas fa-paper-plane"></i> পাঠান
+                    <i class="fas fa-paper-plane"></i> <span>পাঠান</span>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -623,6 +636,7 @@
         let currentChatId = null;
         let currentProductId = null;
         let currentListener = null;
+        let lastMessageTime = null; // নতুন মেসেজ শনাক্ত করতে
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -647,6 +661,7 @@
             return data.secure_url;
         }
 
+        // ইমেজ পাঠানো
         window.sendImage = async function() {
             const fileInput = document.getElementById('imageInput');
             const file = fileInput.files[0];
@@ -674,7 +689,7 @@
                     senderId: currentUser.uid
                 });
 
-                await updateChatLists('📷 ছবิ', message.timestamp);
+                await updateChatLists('📷 ছবি', message.timestamp);
 
                 fileInput.value = '';
             } catch (error) {
@@ -684,6 +699,7 @@
             }
         };
 
+        // অথ চেক
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'index.html';
@@ -721,6 +737,12 @@
             }
 
             loadUserChatList();
+
+            // মোবাইলে সাইডবার টগল
+            if (window.innerWidth <= 768) {
+                document.getElementById('chatSidebar').classList.add('hidden');
+                document.getElementById('backToList').style.display = 'block';
+            }
         });
 
         async function updateChatLists(lastMessageText, timestamp) {
@@ -745,23 +767,28 @@
                 snapshot.forEach(child => {
                     chats.push({ id: child.key, ...child.val() });
                 });
-                chats.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+                // নতুন মেসেজ যাদের আছে তারা উপরে থাকবে
+                chats.sort((a, b) => {
+                    if (a.unread && !b.unread) return -1;
+                    if (!a.unread && b.unread) return 1;
+                    return new Date(b.lastMessageTime) - new Date(a.lastMessageTime);
+                });
                 displayChatList(chats);
             });
         }
 
         function displayChatList(chats) {
-            const container = document.getElementById('chatUserList');
+            const container = document.getElementById('chatList');
             container.innerHTML = '';
 
             if (chats.length === 0) {
-                container.innerHTML = '<p style="padding: 20px;">কোন চ্যাট নেই</p>';
+                container.innerHTML = '<p style="padding:20px; text-align:center;">কোন চ্যাট নেই</p>';
                 return;
             }
 
             chats.forEach(chat => {
                 const item = document.createElement('div');
-                item.className = `chat-user-item ${chat.unread ? 'unread' : ''} ${chat.withUserId === currentChatWith ? 'active' : ''}`;
+                item.className = `chat-item ${chat.unread ? 'unread' : ''} ${chat.withUserId === currentChatWith ? 'active' : ''}`;
                 item.onclick = () => {
                     currentChatWith = chat.withUserId;
                     currentChatId = chat.id;
@@ -774,16 +801,22 @@
                     }
                     loadChat();
                     database.ref(`users/${currentUser.uid}/chats/${chat.id}/unread`).set(false);
-                    if (window.innerWidth <= 768) toggleSidebar();
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('chatSidebar').classList.add('hidden');
+                    }
                 };
-                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD');
+
+                const firstLetter = chat.withUserName.charAt(0).toUpperCase();
+                const time = new Date(chat.lastMessageTime).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+                const lastMsg = chat.lastMessage || '';
+
                 item.innerHTML = `
-                    <div class="chat-user-name">
-                        <span>${chat.withUserName}</span>
-                        <span class="chat-user-time">${time}</span>
+                    <div class="chat-avatar">${firstLetter}</div>
+                    <div class="chat-info">
+                        <h4>${chat.withUserName} <span class="last-time">${time}</span></h4>
+                        <div class="last-message">${lastMsg}</div>
                     </div>
-                    <div class="chat-last-message">${chat.lastMessage || ''}</div>
-                    ${chat.unread ? '<span class="unread-badge">১</span>' : ''}
+                    ${chat.unread ? '<span class="unread-count">নতুন</span>' : ''}
                 `;
                 container.appendChild(item);
             });
@@ -791,9 +824,9 @@
 
         window.searchChats = function() {
             const term = document.getElementById('chatSearch').value.toLowerCase();
-            document.querySelectorAll('#chatUserList .chat-user-item').forEach(item => {
-                const name = item.querySelector('.chat-user-name span').textContent.toLowerCase();
-                item.style.display = name.includes(term) ? 'block' : 'none';
+            document.querySelectorAll('#chatList .chat-item').forEach(item => {
+                const name = item.querySelector('.chat-info h4').childNodes[0].textContent.toLowerCase();
+                item.style.display = name.includes(term) ? 'flex' : 'none';
             });
         };
 
@@ -803,6 +836,9 @@
             if (currentListener) {
                 database.ref(`chats/${currentChatId}/messages`).off('value', currentListener);
             }
+
+            // শেষ মেসেজের সময় রিসেট
+            lastMessageTime = null;
 
             currentListener = database.ref(`chats/${currentChatId}/messages`).orderByChild('timestamp').on('value', (snapshot) => {
                 const messages = [];
@@ -815,41 +851,64 @@
                         database.ref(`chats/${currentChatId}/messages/${child.key}/read`).set(true);
                     }
                 });
+
                 displayMessages(messages);
             });
 
             database.ref('users/' + currentChatWith).once('value').then((snapshot) => {
                 const user = snapshot.val();
-                document.getElementById('chatWithName').textContent = user?.name || 'ইউজার';
+                const name = user?.name || 'ইউজার';
+                document.getElementById('chatWithName').textContent = name;
+                document.getElementById('chatAvatar').textContent = name.charAt(0).toUpperCase();
+
                 const status = document.getElementById('chatWithStatus');
                 const dot = document.getElementById('onlineStatus');
                 if (user?.online) {
                     dot.style.background = '#28a745';
-                    status.innerHTML = '<span class="online-status" style="background: #28a745;"></span> অনলাইন';
+                    status.innerHTML = '<span class="online-status" style="background:#28a745;"></span> অনলাইন';
                 } else {
                     dot.style.background = '#dc3545';
                     const last = user?.lastSeen ? new Date(user.lastSeen).toLocaleString('bn-BD') : 'অজানা';
-                    status.innerHTML = `<span class="online-status" style="background: #dc3545;"></span> সর্বশেষ: ${last}`;
+                    status.innerHTML = `<span class="online-status" style="background:#dc3545;"></span> সর্বশেষ: ${last}`;
                 }
             });
 
-            document.getElementById('chatInputArea').style.display = 'flex';
-            document.getElementById('chatMessages').innerHTML = '';
+            document.getElementById('inputArea').style.display = 'flex';
+            document.getElementById('messagesArea').innerHTML = '';
         }
 
         function displayMessages(messages) {
-            const container = document.getElementById('chatMessages');
+            const container = document.getElementById('messagesArea');
             container.innerHTML = '';
 
             if (messages.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 30px;">কোন মেসেজ নেই</p>';
+                container.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:30px;">কোন মেসেজ নেই</p>';
                 return;
             }
 
-            messages.forEach(msg => {
+            let newMessageIndex = -1;
+            if (lastMessageTime) {
+                // নতুন মেসেজ কোথায় শুরু হয়েছে তা খুঁজে বের করা
+                for (let i = 0; i < messages.length; i++) {
+                    if (new Date(messages[i].timestamp) > new Date(lastMessageTime)) {
+                        newMessageIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            messages.forEach((msg, index) => {
+                // নতুন মেসেজ ইন্ডিকেটর
+                if (newMessageIndex === index) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'new-message-indicator';
+                    indicator.textContent = '🔔 নতুন মেসেজ';
+                    container.appendChild(indicator);
+                }
+
                 const div = document.createElement('div');
                 div.className = `message ${msg.senderId === currentUser.uid ? 'sent' : 'received'}`;
-                const time = new Date(msg.timestamp).toLocaleTimeString('bn-BD');
+                const time = new Date(msg.timestamp).toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
 
                 if (msg.type === 'image') {
                     div.innerHTML = `
@@ -869,6 +928,11 @@
 
                 container.appendChild(div);
             });
+
+            // শেষ মেসেজের সময় আপডেট
+            if (messages.length > 0) {
+                lastMessageTime = messages[messages.length - 1].timestamp;
+            }
 
             container.scrollTop = container.scrollHeight;
         }
@@ -914,13 +978,24 @@
         };
 
         window.toggleSidebar = function() {
-            document.getElementById('chatSidebar').classList.toggle('active');
+            const sidebar = document.getElementById('chatSidebar');
+            sidebar.classList.toggle('hidden');
         };
 
         document.getElementById('messageInput')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
+            }
+        });
+
+        // মোবাইল রেসপনসিভ: ব্যাক বাটন দেখানো/লুকানো
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('backToList').style.display = 'block';
+            } else {
+                document.getElementById('backToList').style.display = 'none';
+                document.getElementById('chatSidebar').classList.remove('hidden');
             }
         });
     </script>

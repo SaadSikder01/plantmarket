@@ -604,46 +604,11 @@
     </div>
 
     <!-- Firebase SDK -->
-	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-
-        // ১. OneSignal কনফিগারেশন ভেরিয়েবল
-        const ONESIGNAL_APP_ID = "10853eb0-996b-4dee-b538-22b6eca1e878";
-        const ONESIGNAL_REST_API_KEY = "os_v2_app_ccct5meznng65njyek3ozipipduf2djhegjeh3me7uiyl43qwyauahjb36amerlc6meqtrnubkxvhog6jpkuwmffbhsmywipfb6wcoa";
-
-        // ২. নোটিফিকেশন পাঠানোর মেইন ফাংশন
-        async function sendPushNotification(receiverId, messageText) {
-            const senderName = (currentUser && currentUser.displayName) ? currentUser.displayName : "প্ল্যান্ট মার্কেট";
-            
-            const notificationData = {
-                app_id: ONESIGNAL_APP_ID,
-                include_external_user_ids: [receiverId], // যাকে পাঠাচ্ছেন তার Firebase UID
-                headings: { "bn": senderName + " থেকে মেসেজ" },
-                contents: { "bn": messageText },
-                android_accent_color: "FF2E7D32", // অ্যাপের সবুজ কালার
-                small_icon: "ic_stat_onesignal_default", // ডিফল্ট আইকন
-                priority: 10
-            };
-
-            try {
-                await fetch("https://api.onesignal.com/notifications", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json; charset=utf-8",
-                        "Authorization": "Basic " + ONESIGNAL_REST_API_KEY
-                    },
-                    body: JSON.stringify(notificationData)
-                });
-                console.log("নোটিফিকেশন সফলভাবে পাঠানো হয়েছে!");
-            } catch (error) {
-                console.error("নোটিফিকেশন এরর:", error);
-            }
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyAmWjUML3MTC4Uuw-qX_oOzZkemw95Iors",
             authDomain: "naruto-76eb1.firebaseapp.com",
@@ -691,7 +656,7 @@
             return data.secure_url;
         }
 
-        // আপডেটেড ইমেজ পাঠানো ফাংশন (নোটিফিকেশন সহ)
+        // ইমেজ পাঠানো
         window.sendImage = async function() {
             const fileInput = document.getElementById('imageInput');
             const file = fileInput.files[0];
@@ -720,52 +685,8 @@
                 });
 
                 await updateChatLists('📷 ছবি', message.timestamp);
-                
-                // *** নোটিফিকেশন কল - ইমেজ পাঠানোর জন্য ***
-                sendPushNotification(currentChatWith, 'আপনাকে একটি ছবি পাঠিয়েছেন');
 
                 fileInput.value = '';
-                showToast('success', 'ছবি পাঠানো হয়েছে');
-            } catch (error) {
-                showToast('error', error.message);
-            } finally {
-                btn.disabled = false;
-            }
-        };
-
-        // আপডেটেড টেক্সট মেসেজ পাঠানো ফাংশন (নোটিফিকেশন সহ)
-        window.sendMessage = async function() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text || !currentChatId) return;
-
-            const btn = document.getElementById('sendBtn');
-            btn.disabled = true;
-
-            const message = {
-                senderId: currentUser.uid,
-                receiverId: currentChatWith,
-                type: 'text',
-                text: text,
-                timestamp: new Date().toISOString(),
-                read: false
-            };
-
-            try {
-                await database.ref(`chats/${currentChatId}/messages`).push(message);
-                await database.ref(`chats/${currentChatId}/lastMessage`).set({
-                    text: text,
-                    timestamp: message.timestamp,
-                    senderId: currentUser.uid
-                });
-
-                await updateChatLists(text, message.timestamp);
-                
-                // *** নোটিফিকেশন কল - টেক্সট মেসেজের জন্য ***
-                sendPushNotification(currentChatWith, text);
-
-                input.value = '';
-                showToast('success', 'মেসেজ পাঠানো হয়েছে');
             } catch (error) {
                 showToast('error', error.message);
             } finally {
@@ -780,11 +701,6 @@
                 return;
             }
             currentUser = user;
-            
-            // OneSignal এ ইউজার আইডি সেট করা
-            if (window.plugins && window.plugins.OneSignal) {
-                window.plugins.OneSignal.setExternalUserId(user.uid);
-            }
 
             // ইউআরএল থেকে প্যারামিটার চেক করা (যদি সরাসরি চ্যাট লিংকে ক্লিক করা হয়)
             const params = new URLSearchParams(window.location.search);
@@ -1028,6 +944,41 @@
         window.showImagePreview = function(url) {
             document.getElementById('previewImage').src = url;
             document.getElementById('imagePreviewModal').style.display = 'flex';
+        };
+
+        window.sendMessage = async function() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !currentChatId) return;
+
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+
+            const message = {
+                senderId: currentUser.uid,
+                receiverId: currentChatWith,
+                type: 'text',
+                text: text,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+
+            try {
+                await database.ref(`chats/${currentChatId}/messages`).push(message);
+                await database.ref(`chats/${currentChatId}/lastMessage`).set({
+                    text: text,
+                    timestamp: message.timestamp,
+                    senderId: currentUser.uid
+                });
+
+                await updateChatLists(text, message.timestamp);
+
+                input.value = '';
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                btn.disabled = false;
+            }
         };
 
         window.toggleSidebar = function() {
